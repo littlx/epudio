@@ -1528,9 +1528,9 @@ a:hover {
   .player-bar .player-slider-container {
     position: absolute;
     top: -6px;
-    left: 0;
-    right: 0;
-    width: 100%;
+    left: var(--radius-lg);
+    right: var(--radius-lg);
+    width: calc(100% - 2 * var(--radius-lg));
     height: 12px;
     padding: 0;
     margin: 0;
