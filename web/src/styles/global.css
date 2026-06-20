@@ -909,35 +909,44 @@ a:hover {
   flex-direction: column;
   gap: var(--sp-3);
 }
-.book-hero-info h2 {
-  font-size: var(--fs-xl);
-  font-weight: 800;
-  line-height: 1.25;
-  letter-spacing: -0.02em;
-}
-.book-title-heading {
-  display: inline-flex;
+.book-title-meta-row {
+  display: flex;
   align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
   gap: var(--sp-2);
+  font-size: var(--fs-base);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--sp-2);
+}
+.book-title-meta-row .title-clickable {
   cursor: pointer;
-  border-bottom: 2px dashed transparent;
-  transition: border-color var(--dur) var(--ease);
-}
-.book-title-heading:hover {
-  border-color: var(--border-glow);
-}
-.edit-icon-indicator {
-  opacity: 0;
-  color: var(--muted);
-  transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease);
   display: inline-flex;
   align-items: center;
+  gap: 6px;
+  border-bottom: 1px dashed transparent;
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-.book-title-heading:hover .edit-icon-indicator {
-  opacity: 1;
-}
-.book-title-heading:hover .edit-icon-indicator:hover {
+.book-title-meta-row .title-clickable:hover {
+  border-color: var(--border-glow);
   color: var(--accent);
+}
+.book-title-meta-row .inline-edit-icon {
+  color: var(--muted);
+  opacity: 0.6;
+  transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.book-title-meta-row .title-clickable:hover .inline-edit-icon {
+  opacity: 1;
+  color: var(--accent);
+}
+.book-title-meta-row .divider {
+  color: var(--border);
+}
+.book-title-meta-row .author {
+  color: var(--text-soft);
+  font-weight: 600;
 }
 
 .title-edit-form {
@@ -962,12 +971,6 @@ a:hover {
   border-color: var(--accent);
   background: var(--surface-3);
   box-shadow: 0 0 0 3px var(--accent-soft);
-}
-.book-hero-info .author-name {
-  font-size: var(--fs-base);
-  font-weight: 600;
-  color: var(--text-soft);
-  margin-top: calc(-1 * var(--sp-2));
 }
 .book-hero-info .badge-row {
   display: flex;
@@ -1405,9 +1408,8 @@ a:hover {
     text-align: center;
   }
   
-  .book-hero-info h2 {
+  .book-title-meta-row {
     justify-content: center;
-    text-align: center;
   }
   
   .book-hero-info .badge-row {

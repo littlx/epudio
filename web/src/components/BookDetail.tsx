@@ -86,7 +86,7 @@ export function BookDetail({ bookId }: { bookId: string }) {
         </div>
         <div class="book-hero-info">
           {isEditing ? (
-            <div class="title-edit-form">
+            <div class="title-edit-form" style={{ marginBottom: 12 }}>
               <input
                 type="text"
                 class="title-edit-input"
@@ -109,18 +109,14 @@ export function BookDetail({ bookId }: { bookId: string }) {
               </button>
             </div>
           ) : (
-            <h2
-              class="book-title-heading"
-              onClick={() => setIsEditing(true)}
-              title="点击编辑书名"
-            >
-              {meta.title}
-              <span class="edit-icon-indicator">
-                <IconEdit size={16} />
+            <div class="book-title-meta-row">
+              <span class="title-clickable" onClick={() => setIsEditing(true)} title="点击修改书名">
+                {meta.title} <IconEdit size={14} class="inline-edit-icon" />
               </span>
-            </h2>
+              <span class="divider">·</span>
+              <span class="author">{meta.author || "未知作者"}</span>
+            </div>
           )}
-          <p class="author-name">{meta.author || "未知作者"}</p>
           <div class="progress-section">
             <div class="progress-label">
               <span>已完成 {done}/{total} 章</span>
