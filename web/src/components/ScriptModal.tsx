@@ -1,5 +1,5 @@
 // 对谈文稿弹窗：预览 / 内联编辑（可增删 turn、改说话人），保存后重新合成
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useState, useRef } from "preact/hooks";
 import { scriptModal, showToast } from "../store";
 import { api } from "../api";
 import type { Script, Turn } from "../types";
@@ -9,15 +9,21 @@ export function ScriptModal() {
   const modal = scriptModal.value;
   const [render, setRender] = useState(false);
   const [animOpen, setAnimOpen] = useState(false);
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
 
   // 缓存上一次的 modal 信息，在关闭动画进行中依然可以用来渲染内容而不会突变为空
   const [lastModal, setLastModal] = useState<{ bookId: string; index: number } | null>(null);
 
   useEffect(() => {
     if (modal) {
+      triggerRef.current = document.activeElement as HTMLElement;
       setLastModal(modal);
       setRender(true);
-      const timer = setTimeout(() => setAnimOpen(true), 10);
+      const timer = setTimeout(() => {
+        setAnimOpen(true);
+        closeBtnRef.current?.focus();
+      }, 50);
 
       const handleEsc = (e: KeyboardEvent) => {
         if (e.key === "Escape") scriptModal.value = null;
@@ -30,7 +36,13 @@ export function ScriptModal() {
       };
     } else {
       setAnimOpen(false);
-      const timer = setTimeout(() => setRender(false), 200);
+      const timer = setTimeout(() => {
+        setRender(false);
+        if (triggerRef.current) {
+          triggerRef.current.focus();
+          triggerRef.current = null;
+        }
+      }, 200);
       return () => clearTimeout(timer);
     }
   }, [modal]);
@@ -125,6 +137,31 @@ export function ScriptModal() {
     }
   };
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Tab") {
+      const container = e.currentTarget as HTMLElement;
+      const focusables = Array.from(
+        container.querySelectorAll(
+          'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex="0"]'
+        )
+      ) as HTMLElement[];
+      if (focusables.length === 0) return;
+      const first = focusables[0]!;
+      const last = focusables[focusables.length - 1]!;
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+  };
+
   if (!render || !activeModal) return null;
 
   const displayScript = editing ? draft : script;
@@ -132,13 +169,20 @@ export function ScriptModal() {
   return (
     <div
       class={`modal-backdrop ${animOpen ? "open" : ""}`}
+      onKeyDown={handleKeyDown}
       onClick={(e) => {
         if (e.target === e.currentTarget) scriptModal.value = null;
       }}
+      role="presentation"
     >
-      <div class={`modal script-modal ${animOpen ? "open" : ""}`}>
+      <div
+        class={`modal script-modal ${animOpen ? "open" : ""}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="script-title"
+      >
         <div class="modal-head">
-          <h3>{title || "解读文稿"}</h3>
+          <h3 id="script-title">{title || "解读文稿"}</h3>
           <div class="modal-head-actions">
             {!loading && script && !editing && (
               <button class="btn sm ghost" onClick={startEdit}>
@@ -159,7 +203,12 @@ export function ScriptModal() {
                 </button>
               </>
             )}
-            <button class="icon-btn" onClick={() => (scriptModal.value = null)}>
+            <button
+              ref={closeBtnRef}
+              class="icon-btn"
+              onClick={() => (scriptModal.value = null)}
+              aria-label="关闭文稿"
+            >
               <IconClose size={18} />
             </button>
           </div>

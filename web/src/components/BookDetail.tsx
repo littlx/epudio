@@ -13,6 +13,8 @@ import {
   showToast,
   updateBookTitle,
   regenerateChapter,
+  showConfirm,
+  sseStatus,
 } from "../store";
 import { api } from "../api";
 import { ChapterRow } from "./ChapterRow";
@@ -36,10 +38,19 @@ export function BookDetail({ bookId }: { bookId: string }) {
   const [collapsedDone, setCollapsedDone] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
+  const selectAllRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (meta) setEditTitle(meta.title);
   }, [meta?.book_id, meta?.title]);
+
+  useEffect(() => {
+    if (selectAllRef.current && meta) {
+      const activeCount = selectedCount.value;
+      const chCount = meta.chapters.length;
+      selectAllRef.current.indeterminate = activeCount > 0 && activeCount < chCount;
+    }
+  }, [selectedCount.value, meta?.chapters.length]);
 
   if (!meta) {
     return (
@@ -109,9 +120,14 @@ export function BookDetail({ bookId }: { bookId: string }) {
   };
 
   const handleDelete = () => {
-    if (confirm(`确定要删除《${meta.title}》吗？所有章节和音频数据将被永久删除！`)) {
-      deleteBook(meta.book_id);
-    }
+    showConfirm({
+      title: "删除书籍",
+      message: `确定要删除《${meta.title}》吗？该书籍对应的所有章节和音频数据将被永久删除！`,
+      confirmText: "确认删除",
+      cancelText: "取消",
+      isDangerous: true,
+      onConfirm: () => deleteBook(meta.book_id),
+    });
   };
 
   // 折叠已完成时，把列表拆成 done（折叠为一行）与其余
@@ -154,12 +170,37 @@ export function BookDetail({ bookId }: { bookId: string }) {
               </div>
             </div>
           ) : (
-            <div class="book-title-meta-row">
-              <span class="title-clickable" onClick={() => setIsEditing(true)} title="点击修改书名">
+            <div class="book-title-meta-row" style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+              <span
+                class="title-clickable"
+                onClick={() => setIsEditing(true)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setIsEditing(true);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                title="点击修改书名"
+                aria-label={`修改书名：${meta.title}`}
+              >
                 {meta.title} <IconEdit size={14} class="inline-edit-icon" />
               </span>
               <span class="divider">·</span>
               <span class="author">{meta.author || "未知作者"}</span>
+              {sseStatus.value === "connecting" && (
+                <span class="sse-indicator connecting" style={{ fontSize: 11, padding: "2px 6px", background: "rgba(245, 166, 35, 0.1)", color: "var(--warning)", borderRadius: 4, display: "inline-flex", alignItems: "center", gap: 4 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--warning)" }} />
+                  连接中...
+                </span>
+              )}
+              {sseStatus.value === "error" && (
+                <span class="sse-indicator error" style={{ fontSize: 11, padding: "2px 6px", background: "rgba(239, 68, 68, 0.1)", color: "var(--danger)", borderRadius: 4, display: "inline-flex", alignItems: "center", gap: 4 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--danger)" }} />
+                  网络连接已断开，正在尝试重连
+                </span>
+              )}
             </div>
           )}
           <div class="progress-section">
@@ -263,6 +304,7 @@ export function BookDetail({ bookId }: { bookId: string }) {
         <div class="chapter-toolbar">
           <label>
             <input
+              ref={selectAllRef}
               type="checkbox"
               checked={allSelected}
               onChange={(e) => selectAll((e.target as HTMLInputElement).checked)}
@@ -293,6 +335,15 @@ export function BookDetail({ bookId }: { bookId: string }) {
             <div
               class="chapter-row collapsed-done-row"
               onClick={() => setCollapsedDone(false)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setCollapsedDone(false);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              aria-label={`已完成 ${done} 章，点击展开列表`}
             >
               <div class="checkbox" />
               <div class="idx">

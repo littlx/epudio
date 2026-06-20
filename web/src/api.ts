@@ -144,6 +144,7 @@ export function subscribeBook(
     onChapter?: (chapter: BookMeta["chapters"][number]) => void;
     onBook?: (e: { running: boolean; done: number; total: number; errored: number }) => void;
     onDone?: () => void;
+    onStateChange?: (state: "connecting" | "connected" | "error") => void;
   }
 ): () => void {
   let closed = false;
@@ -152,15 +153,22 @@ export function subscribeBook(
 
   const connect = () => {
     if (closed) return;
+    handlers.onStateChange?.("connecting");
     es = new EventSource(`${BASE}/books/${bookId}/stream`);
 
+    es.onopen = () => {
+      handlers.onStateChange?.("connected");
+    };
+
     es.addEventListener("snapshot", (ev) => {
+      handlers.onStateChange?.("connected");
       try {
         handlers.onSnapshot?.(JSON.parse((ev as MessageEvent).data));
       } catch {}
     });
 
     es.addEventListener("message", (ev) => {
+      handlers.onStateChange?.("connected");
       try {
         const data = JSON.parse((ev as MessageEvent).data);
         if (data.type === "chapter" && handlers.onChapter) {
@@ -174,6 +182,7 @@ export function subscribeBook(
     });
 
     es.onerror = () => {
+      handlers.onStateChange?.("error");
       es?.close();
       es = null;
       if (!closed) {

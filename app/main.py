@@ -59,7 +59,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="EPUB 有声解读", lifespan=lifespan)
+app = FastAPI(title="EPUDIO", lifespan=lifespan)
 
 # 开发期允许 Vite dev server 跨域访问
 app.add_middleware(

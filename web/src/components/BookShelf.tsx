@@ -59,6 +59,15 @@ export function BookShelf() {
       <div
         class={"upload-zone" + (dragOver ? " dragover" : "")}
         onClick={() => !uploading && fileRef.current?.click()}
+        onKeyDown={(e) => {
+          if (!uploading && (e.key === "Enter" || e.key === " ")) {
+            e.preventDefault();
+            fileRef.current?.click();
+          }
+        }}
+        role="button"
+        tabIndex={uploading ? -1 : 0}
+        aria-label="上传电子书，支持 EPUB 格式"
         onDragOver={(e) => {
           e.preventDefault();
           setDragOver(true);
@@ -104,28 +113,56 @@ export function BookShelf() {
       <h2 class="section-title">书架</h2>
 
       {books.value.length > 0 && (
-        <div class="shelf-toolbar">
-          <div class="shelf-search">
-            <IconSearch size={16} />
-            <input
-              type="text"
-              placeholder="搜索书名或作者"
-              value={query}
-              onInput={(e) => setQuery((e.target as HTMLInputElement).value)}
-            />
+        <>
+          <div class="shelf-toolbar">
+            <div class="shelf-search" style={{ position: "relative", display: "flex", alignItems: "center" }}>
+              <IconSearch size={16} />
+              <input
+                type="text"
+                placeholder="搜索书名或作者"
+                value={query}
+                onInput={(e) => setQuery((e.target as HTMLInputElement).value)}
+                style={{ paddingRight: 32 }}
+              />
+              {query && (
+                <button
+                  onClick={() => setQuery("")}
+                  style={{
+                    position: "absolute",
+                    right: 8,
+                    background: "none",
+                    border: "none",
+                    color: "var(--text-muted)",
+                    cursor: "pointer",
+                    fontSize: 18,
+                    padding: "2px 8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
+                  title="清空搜索"
+                  aria-label="清空搜索"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+            <div class="shelf-filter-bar">
+              {FILTERS.map((f) => (
+                <button
+                  key={f.value}
+                  class={`btn sm ${filter === f.value ? "" : "ghost"}`}
+                  onClick={() => setFilter(f.value)}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
           </div>
-          <div class="shelf-filter-bar">
-            {FILTERS.map((f) => (
-              <button
-                key={f.value}
-                class={`btn sm ${filter === f.value ? "" : "ghost"}`}
-                onClick={() => setFilter(f.value)}
-              >
-                {f.label}
-              </button>
-            ))}
+          <div class="shelf-info-bar" style={{ marginTop: 8, marginBottom: 16, fontSize: 12, color: "var(--text-muted)", display: "flex", justifyContent: "flex-end" }}>
+            <span>已筛选出 {filtered.length} 本书（共 {books.value.length} 本）</span>
           </div>
-        </div>
+        </>
       )}
 
       {shelfLoading.value ? (
@@ -157,8 +194,23 @@ export function BookShelf() {
 
 function BookCard({ book }: { book: BookSummary }) {
   const p = pct(book.done_count, book.chapter_count);
+  
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      goBook(book.book_id);
+    }
+  };
+
   return (
-    <div class="book-card" onClick={() => goBook(book.book_id)}>
+    <div
+      class="book-card"
+      onClick={() => goBook(book.book_id)}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-label={`书籍卡片：${book.title}，作者：${book.author || "未知"}，进度 ${p}%`}
+    >
       <div class="cover" style={{ background: getBookGradient(book.book_id) }}>
         <div class="cover-title">{book.title}</div>
         <div class="cover-author">{book.author || "未知作者"}</div>

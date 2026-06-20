@@ -72,7 +72,23 @@ export function ChapterRow({
         />
       </div>
       <div class="idx">{chapter.index + 1}</div>
-      <div class="ch-main">
+      <div
+        class={"ch-main" + (chapter.status === "done" ? " clickable" : "")}
+        onClick={() => {
+          if (chapter.status === "done") {
+            togglePlay(bookId, chapter.index);
+          }
+        }}
+        onKeyDown={(e) => {
+          if (chapter.status === "done" && (e.key === "Enter" || e.key === " ")) {
+            e.preventDefault();
+            togglePlay(bookId, chapter.index);
+          }
+        }}
+        role={chapter.status === "done" ? "button" : undefined}
+        tabIndex={chapter.status === "done" ? 0 : undefined}
+        aria-label={chapter.status === "done" ? `播放第 ${chapter.index + 1} 章：${chapter.title}` : undefined}
+      >
         <div class="ch-title">{chapter.title}</div>
         <div class="ch-stage">
           {inProgress && (

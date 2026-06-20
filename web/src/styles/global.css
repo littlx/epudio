@@ -1,5 +1,4 @@
 @import "./tokens.css";
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 /* ============================================================
    重置 & 基础
@@ -416,8 +415,8 @@ a:hover {
   border-color: var(--border-glow);
 }
 .btn.danger {
-  background: linear-gradient(135deg, var(--danger) 0%, #b91c1c 100%);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+  background: linear-gradient(135deg, var(--danger) 0%, rgba(220, 38, 38, 0.85) 100%);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
 }
 .btn.danger:hover {
   box-shadow: 0 6px 18px rgba(239, 68, 68, 0.35);
@@ -472,7 +471,7 @@ a:hover {
 .upload-zone.dragover {
   border-color: var(--accent);
   background: var(--accent-soft);
-  box-shadow: 0 0 24px rgba(139, 92, 246, 0.04);
+  box-shadow: 0 0 24px rgba(var(--accent-rgb), 0.04);
 }
 .upload-zone input[type="file"] {
   display: none;
@@ -495,9 +494,7 @@ a:hover {
   gap: var(--sp-5);
 }
 .book-card {
-  background: var(--surface);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  background: var(--surface-solid);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -594,7 +591,7 @@ a:hover {
 }
 .book-card .book-progress-bar .fill {
   height: 100%;
-  background: var(--accent-gradient);
+  background: linear-gradient(90deg, var(--accent), var(--success));
   border-radius: var(--radius-full);
 }
 .book-card .meta-footer {
@@ -620,17 +617,26 @@ a:hover {
   gap: var(--sp-4);
   align-items: center;
   padding: 10px 16px;
-  background: var(--surface);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  background: var(--surface-solid);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   transition: all var(--dur) var(--ease);
 }
 .chapter-row:hover {
   border-color: var(--border-glow);
-  background: var(--surface-2);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  background: var(--surface-solid);
+  box-shadow: var(--shadow-md);
+}
+.chapter-row .ch-main.clickable {
+  cursor: pointer;
+}
+.chapter-row .ch-main.clickable:hover .ch-title {
+  color: var(--accent);
+}
+.chapter-row .ch-main.clickable:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 4px;
 }
 
 /* 自定义 Checkbox 交互 */
@@ -710,7 +716,7 @@ a:hover {
 }
 .chapter-row .stage-fill {
   height: 100%;
-  background: var(--accent-gradient);
+  background: linear-gradient(90deg, var(--accent), var(--success));
   border-radius: var(--radius-full);
   transition: width var(--dur) var(--ease);
 }
@@ -863,9 +869,7 @@ a:hover {
   gap: var(--sp-6);
   align-items: flex-start;
   flex-wrap: wrap;
-  background: var(--surface);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  background: var(--surface-solid);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--sp-5);

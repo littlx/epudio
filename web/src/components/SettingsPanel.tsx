@@ -6,6 +6,7 @@ import {
   settingsOpen,
   showToast,
   loadSettings,
+  settingsError,
 } from "../store";
 import { api } from "../api";
 import { themeChoice, setTheme } from "../theme";
@@ -31,10 +32,29 @@ export function SettingsPanel() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const activeVoiceRef = useRef<string | null>(null);
 
+  const [localConcurrency, setLocalConcurrency] = useState(s ? s.concurrency : 2);
+  const [localDeepseekRpm, setLocalDeepseekRpm] = useState(s ? s.deepseek_rpm : 30);
+  const [localEdgeConcurrency, setLocalEdgeConcurrency] = useState(s ? s.edge_concurrency : 8);
+
+  useEffect(() => {
+    if (s) {
+      setLocalConcurrency(s.concurrency);
+      setLocalDeepseekRpm(s.deepseek_rpm);
+      setLocalEdgeConcurrency(s.edge_concurrency);
+    }
+  }, [s?.concurrency, s?.deepseek_rpm, s?.edge_concurrency]);
+
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     if (isOpen) {
+      triggerRef.current = document.activeElement as HTMLElement;
       setRender(true);
-      const timer = setTimeout(() => setAnimOpen(true), 10);
+      const timer = setTimeout(() => {
+        setAnimOpen(true);
+        closeBtnRef.current?.focus();
+      }, 50);
 
       const handleEsc = (e: KeyboardEvent) => {
         if (e.key === "Escape") settingsOpen.value = false;
@@ -47,7 +67,13 @@ export function SettingsPanel() {
       };
     } else {
       setAnimOpen(false);
-      const timer = setTimeout(() => setRender(false), 200);
+      const timer = setTimeout(() => {
+        setRender(false);
+        if (triggerRef.current) {
+          triggerRef.current.focus();
+          triggerRef.current = null;
+        }
+      }, 200);
 
       // Drawer 关闭时，停止并清理正在播放的音频
       if (audioRef.current) {
@@ -137,23 +163,72 @@ export function SettingsPanel() {
     }
   };
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Tab") {
+      const container = e.currentTarget as HTMLElement;
+      const focusables = Array.from(
+        container.querySelectorAll(
+          'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex="0"]'
+        )
+      ) as HTMLElement[];
+      if (focusables.length === 0) return;
+      const first = focusables[0]!;
+      const last = focusables[focusables.length - 1]!;
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+  };
+
   return (
     <>
       <div
         class={`drawer-backdrop ${animOpen ? "open" : ""}`}
         onClick={() => (settingsOpen.value = false)}
+        role="presentation"
       />
-      <div class={`drawer ${animOpen ? "open" : ""}`}>
+      <div
+        class={`drawer ${animOpen ? "open" : ""}`}
+        onKeyDown={handleKeyDown}
+        role="dialog"
+        aria-modal="true"
+        aria-label="设置抽屉"
+      >
         <div class="drawer-head">
-          <h3>设置</h3>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <h3>设置</h3>
+            {saving ? (
+              <span style={{ fontSize: 12, color: "var(--accent)" }}>保存中…</span>
+            ) : (
+              <span style={{ fontSize: 12, color: "var(--success)" }}>✓ 已保存</span>
+            )}
+          </div>
           <button
+            ref={closeBtnRef}
             class="icon-btn"
             onClick={() => (settingsOpen.value = false)}
+            aria-label="关闭设置"
           >
             <IconClose size={18} />
           </button>
         </div>
         <div class="drawer-body">
+          {settingsError.value && (
+            <div style={{ padding: "8px 12px", background: "rgba(239, 68, 68, 0.08)", border: "1px solid var(--danger-soft)", borderRadius: "var(--radius-sm)", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <span style={{ fontSize: 12, color: "var(--danger)" }}>加载配置失败，当前使用本地默认值</span>
+              <button class="btn sm" onClick={() => loadSettings()} style={{ padding: "2px 8px", fontSize: 11, background: "var(--accent)" }}>
+                重试
+              </button>
+            </div>
+          )}
           {/* 解读风格 */}
           <div class="drawer-section">
             <h4>解读风格</h4>
@@ -164,6 +239,15 @@ export function SettingsPanel() {
                 }`}
                 style={{ marginBottom: 8 }}
                 onClick={() => update({ style: opt.value })}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    update({ style: opt.value });
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={`风格：${opt.label}，说明：${opt.desc}`}
               >
                 <div>
                   <div style={{ fontWeight: 600, fontSize: 13 }}>
@@ -175,14 +259,10 @@ export function SettingsPanel() {
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* 对谈长度 */}
-          <div class="drawer-section">
-            <h4>对谈长度</h4>
-            <p class="muted" style={{ fontSize: 12, lineHeight: 1.5, marginTop: 4 }}>
-              现已由章节内容的复杂度与信息密度自动决定（一般在 10–38 句之间），以确保硬核知识能被层层剖析透彻，且无冗余废话。
-            </p>
+            <div class="info-note" style={{ display: "flex", gap: 6, alignItems: "flex-start", marginTop: 12, padding: "8px 12px", background: "rgba(var(--accent-rgb), 0.04)", borderRadius: 8, fontSize: 11, lineHeight: 1.4 }}>
+              <span style={{ color: "var(--accent)", fontWeight: "bold" }}>i</span>
+              <span class="muted">解读篇幅由章节信息密度自适应控制（每章约 10–38 句），直击核心不注水。</span>
+            </div>
           </div>
 
           {/* 音色 */}
@@ -196,6 +276,15 @@ export function SettingsPanel() {
                 <div
                   class={`voice-card ${s.voice_a === v.id ? "selected" : ""}`}
                   onClick={() => update({ voice_a: v.id })}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      update({ voice_a: v.id });
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`主持人甲音色：${v.name}`}
                 >
                   <span class="name">{v.name}</span>
                   <button
@@ -219,6 +308,15 @@ export function SettingsPanel() {
                 <div
                   class={`voice-card ${s.voice_b === v.id ? "selected" : ""}`}
                   onClick={() => update({ voice_b: v.id })}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      update({ voice_b: v.id });
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`主持人乙音色：${v.name}`}
                 >
                   <span class="name">{v.name}</span>
                   <button
@@ -240,36 +338,45 @@ export function SettingsPanel() {
           <div class="drawer-section">
             <h4>性能与限流</h4>
             <div class="field">
-              <label>章节并发数：{s.concurrency}</label>
+              <label>章节并发数：{localConcurrency}</label>
               <input
                 type="range"
                 min={1}
                 max={8}
-                value={s.concurrency}
+                value={localConcurrency}
+                onInput={(e) =>
+                  setLocalConcurrency(Number((e.target as HTMLInputElement).value))
+                }
                 onChange={(e) =>
                   update({ concurrency: Number((e.target as HTMLInputElement).value) })
                 }
               />
             </div>
             <div class="field">
-              <label>DeepSeek 每分钟请求数：{s.deepseek_rpm}</label>
+              <label>DeepSeek 每分钟请求数：{localDeepseekRpm}</label>
               <input
                 type="range"
                 min={5}
                 max={120}
-                value={s.deepseek_rpm}
+                value={localDeepseekRpm}
+                onInput={(e) =>
+                  setLocalDeepseekRpm(Number((e.target as HTMLInputElement).value))
+                }
                 onChange={(e) =>
                   update({ deepseek_rpm: Number((e.target as HTMLInputElement).value) })
                 }
               />
             </div>
             <div class="field">
-              <label>Edge TTS 并发上限：{s.edge_concurrency}</label>
+              <label>Edge TTS 并发上限：{localEdgeConcurrency}</label>
               <input
                 type="range"
                 min={1}
                 max={20}
-                value={s.edge_concurrency}
+                value={localEdgeConcurrency}
+                onInput={(e) =>
+                  setLocalEdgeConcurrency(Number((e.target as HTMLInputElement).value))
+                }
                 onChange={(e) =>
                   update({
                     edge_concurrency: Number((e.target as HTMLInputElement).value),
@@ -293,8 +400,6 @@ export function SettingsPanel() {
               ))}
             </div>
           </div>
-
-          {saving && <p class="muted">保存中…</p>}
         </div>
       </div>
     </>

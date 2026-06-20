@@ -14,6 +14,7 @@ import { BookShelf } from "./BookShelf";
 import { BookDetail } from "./BookDetail";
 import { SettingsPanel } from "./SettingsPanel";
 import { ScriptModal } from "./ScriptModal";
+import { ConfirmModal } from "./ConfirmModal";
 import { Toast } from "./Toast";
 import { IconSun, IconMoon, IconSettings, IconBack, IconAlert } from "./icons";
 
@@ -38,7 +39,7 @@ export function AppShell() {
       <header class="topbar">
         <div class="brand" onClick={goShelf}>
           <span class="logo-dot" />
-          <h1>EPUB 有声解读</h1>
+          <h1>EPUDIO</h1>
         </div>
         <div class="topbar-actions">
           {v.name === "book" && (
@@ -79,7 +80,7 @@ export function AppShell() {
       {!hasApiKey.value && (
         <div class="api-warn">
           <IconAlert size={16} />
-          <span>未配置 DEEPSEEK_API_KEY，无法生成解读。请在 .env 中配置后重启服务。</span>
+          <span>服务暂未配置大模型 API 密钥（DEEPSEEK_API_KEY），无法生成解读。请联系管理员进行配置，或在项目根目录的 .env 文件中设置该密钥并重启服务。</span>
         </div>
       )}
 
@@ -91,6 +92,7 @@ export function AppShell() {
 
       <SettingsPanel />
       <ScriptModal />
+      <ConfirmModal />
       <Toast />
     </div>
   );

@@ -1,6 +1,6 @@
 {
-  "name": "EPUB 有声解读",
-  "short_name": "EPUB 解读",
+  "name": "EPUDIO",
+  "short_name": "EPUDIO",
   "description": "把 EPUB 电子书转成有声深度解读，每章一个 MP3",
   "lang": "zh-CN",
   "start_url": "/",

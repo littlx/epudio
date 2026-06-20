@@ -59,6 +59,7 @@
   --muted: #64748b;
 
   --accent: #8b5cf6;
+  --accent-rgb: 139, 92, 246;
   --accent-gradient: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
   --accent-glow: rgba(139, 92, 246, 0.35);
   --accent-2: #6366f1;
@@ -99,6 +100,7 @@
   --muted: #94a3b8;
 
   --accent: #4f46e5;
+  --accent-rgb: 79, 70, 229;
   --accent-gradient: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
   --accent-glow: rgba(79, 70, 229, 0.2);
   --accent-2: #7c3aed;
@@ -111,9 +113,9 @@
   --danger: #dc2626;
   --danger-soft: rgba(220, 38, 38, 0.1);
 
-  --shadow-sm: 0 2px 8px rgba(99, 102, 241, 0.03);
-  --shadow-md: 0 12px 32px rgba(99, 102, 241, 0.06);
-  --shadow-lg: 0 20px 48px rgba(99, 102, 241, 0.1);
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.08);
   
   --glass-blur: blur(20px) saturate(170%);
 }

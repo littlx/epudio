@@ -39,14 +39,39 @@ const bookCache = new Map<string, BookMeta>();
 export const settings = signal<Settings | null>(null);
 export const voiceOptions = signal<{ id: string; name: string }[]>([]);
 export const hasApiKey = signal(false);
+export const settingsError = signal<boolean>(false);
+
+// ---- SSE 状态 ----
+export type SSEStatus = "connecting" | "connected" | "error";
+export const sseStatus = signal<SSEStatus>("connected");
 
 // ---- Toast ----
-export const toast = signal<{ text: string; kind: "info" | "error" | "success" } | null>(null);
-let toastTimer: number | null = null;
-export function showToast(text: string, kind: "info" | "error" | "success" = "info") {
-  toast.value = { text, kind };
-  if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = window.setTimeout(() => (toast.value = null), 3000);
+export interface ToastItem {
+  id: string;
+  text: string;
+  kind: "info" | "error" | "success";
+  action?: { label: string; onClick: () => void };
+}
+export const toasts = signal<ToastItem[]>([]);
+
+export function showToast(
+  text: string,
+  kind: "info" | "error" | "success" = "info",
+  action?: { label: string; onClick: () => void }
+) {
+  const id = Math.random().toString(36).substring(2, 9);
+  const item: ToastItem = { id, text, kind, action };
+  toasts.value = [...toasts.value, item];
+
+  // 错误类消息展示 8 秒，其余消息 3.5 秒
+  const duration = kind === "error" ? 8000 : 3500;
+  window.setTimeout(() => {
+    removeToast(id);
+  }, duration);
+}
+
+export function removeToast(id: string) {
+  toasts.value = toasts.value.filter((t) => t.id !== id);
 }
 
 // ---- 设置抽屉 ----
@@ -55,13 +80,30 @@ export const settingsOpen = signal(false);
 // ---- 文稿弹窗 ----
 export const scriptModal = signal<{ bookId: string; index: number } | null>(null);
 
+// ---- 确认弹窗 ----
+export interface ConfirmModalConfig {
+  title: string;
+  message: string;
+  confirmText?: string;
+  cancelText?: string;
+  isDangerous?: boolean;
+  onConfirm: () => void | Promise<void>;
+}
+export const confirmModal = signal<ConfirmModalConfig | null>(null);
+export function showConfirm(config: ConfirmModalConfig) {
+  confirmModal.value = config;
+}
+
 // ---- 动作 ----
 export async function loadBooks() {
   shelfLoading.value = true;
   try {
     books.value = await api.listBooks();
   } catch (e) {
-    showToast("加载书架失败", "error");
+    showToast("加载书架失败", "error", {
+      label: "重试",
+      onClick: () => loadBooks(),
+    });
   } finally {
     shelfLoading.value = false;
   }
@@ -73,7 +115,25 @@ export async function loadSettings() {
     settings.value = res.settings;
     voiceOptions.value = res.voice_options;
     hasApiKey.value = res.has_api_key;
-  } catch {}
+    settingsError.value = false;
+  } catch (e) {
+    settingsError.value = true;
+    settings.value = {
+      style: "dialogue",
+      turns_min: 8,
+      turns_max: 16,
+      voice_a: "zh-CN-XiaoxiaoNeural",
+      voice_b: "zh-CN-YunxiNeural",
+      concurrency: 2,
+      deepseek_rpm: 30,
+      edge_concurrency: 8,
+      theme: "system",
+    };
+    showToast("加载设置失败，已应用本地默认值", "error", {
+      label: "重试",
+      onClick: () => loadSettings(),
+    });
+  }
 }
 
 export function goShelf() {
@@ -122,6 +182,9 @@ export async function syncRoute() {
 function subscribeSSE(bookId: string) {
   if (unsubSSE) unsubSSE();
   unsubSSE = subscribeBook(bookId, {
+    onStateChange: (state) => {
+      sseStatus.value = state;
+    },
     onSnapshot: (meta) => {
       currentBook.value = meta;
       bookCache.set(bookId, meta);
@@ -262,25 +325,31 @@ export async function deleteChapter(bookId: string, index: number) {
     showToast("该书正在生成中，暂无法删除章节", "error");
     return;
   }
-  if (!confirm("确定要删除这一章吗？该操作不可恢复。")) {
-    return;
-  }
-  try {
-    await api.deleteChapter(bookId, index);
-    showToast("章节已删除", "success");
-    if (selectedIndexes.value.has(index)) {
-      const s = new Set(selectedIndexes.value);
-      s.delete(index);
-      selectedIndexes.value = s;
+  showConfirm({
+    title: "删除章节",
+    message: "确定要删除这一章吗？已生成的音频和对谈脚本数据将被永久删除，该操作不可恢复。",
+    confirmText: "确认删除",
+    cancelText: "取消",
+    isDangerous: true,
+    onConfirm: async () => {
+      try {
+        await api.deleteChapter(bookId, index);
+        showToast("章节已删除", "success");
+        if (selectedIndexes.value.has(index)) {
+          const s = new Set(selectedIndexes.value);
+          s.delete(index);
+          selectedIndexes.value = s;
+        }
+        if (currentBook.value && currentBook.value.book_id === bookId) {
+          const chapters = currentBook.value.chapters.filter((c) => c.index !== index);
+          currentBook.value = { ...currentBook.value, chapters };
+          bookCache.set(bookId, currentBook.value);
+        }
+      } catch (e: any) {
+        showToast(e.message || "删除失败", "error");
+      }
     }
-    if (currentBook.value && currentBook.value.book_id === bookId) {
-      const chapters = currentBook.value.chapters.filter((c) => c.index !== index);
-      currentBook.value = { ...currentBook.value, chapters };
-      bookCache.set(bookId, currentBook.value);
-    }
-  } catch (e: any) {
-    showToast(e.message || "删除失败", "error");
-  }
+  });
 }
 
 export async function updateBookTitle(bookId: string, title: string) {

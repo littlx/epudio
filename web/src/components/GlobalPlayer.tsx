@@ -9,7 +9,7 @@ import {
   audioUrlFor,
 } from "../store";
 import { loadPosition, savePosition } from "../playback";
-import { IconPrev, IconNext, IconPlay, IconPause } from "./icons";
+import { IconPrev, IconNext, IconPlay, IconPause, IconVolume, IconMute } from "./icons";
 import { formatDuration } from "../utils";
 
 export function GlobalPlayer() {
@@ -20,6 +20,10 @@ export function GlobalPlayer() {
   const [duration, setDuration] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1.0);
 
+  // 音量与静音状态，从本地缓存加载初始值
+  const [volume, setVolume] = useState(() => Number(localStorage.getItem("player-volume") || "0.8"));
+  const [muted, setMuted] = useState(() => localStorage.getItem("player-muted") === "true");
+
   // src 变化时加载并播放
   useEffect(() => {
     const a = audioRef.current;
@@ -29,8 +33,9 @@ export function GlobalPlayer() {
       a.src = url;
       a.load();
     }
-    // 重新应用当前的播放语速
+    // 重新应用当前的播放语速与音量
     a.playbackRate = playbackRate;
+    a.volume = muted ? 0 : volume;
     if (!cur.paused) {
       a.play().catch(() => {});
     } else {
@@ -55,6 +60,56 @@ export function GlobalPlayer() {
       audioRef.current.playbackRate = playbackRate;
     }
   }, [playbackRate]);
+
+  // 同步音量设置到 audio 节点并持久化
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = muted ? 0 : volume;
+    }
+    localStorage.setItem("player-volume", volume.toString());
+    localStorage.setItem("player-muted", muted ? "true" : "false");
+  }, [volume, muted]);
+
+  // 键盘快捷键监听：空格播放/暂停、←/→ 上下章、Shift+←/→ 进退 15s
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName) ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+
+      if (e.key === " ") {
+        e.preventDefault();
+        player.value = { ...player.value, paused: !player.value.paused };
+      } else if (e.key === "ArrowLeft" && !e.shiftKey) {
+        e.preventDefault();
+        playPrev();
+      } else if (e.key === "ArrowRight" && !e.shiftKey) {
+        e.preventDefault();
+        playNext();
+      } else if (e.key === "ArrowLeft" && e.shiftKey) {
+        e.preventDefault();
+        if (audioRef.current) {
+          const t = Math.max(0, audioRef.current.currentTime - 15);
+          audioRef.current.currentTime = t;
+          setCurrentTime(t);
+        }
+      } else if (e.key === "ArrowRight" && e.shiftKey) {
+        e.preventDefault();
+        if (audioRef.current) {
+          const t = Math.min(duration, audioRef.current.currentTime + 15);
+          audioRef.current.currentTime = t;
+          setCurrentTime(t);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown);
+  }, [duration]);
 
   const handleTimeUpdate = () => {
     if (audioRef.current) {
@@ -147,15 +202,42 @@ export function GlobalPlayer() {
           type="range"
           class="player-slider"
           min={0}
-          max={duration || 100}
+          max={duration || 0}
           value={currentTime}
           onInput={handleSeek}
+          disabled={!duration}
           aria-label="播放进度"
         />
       </div>
 
       <div class="player-time-display">
         {formatDuration(currentTime)} / {formatDuration(duration)}
+      </div>
+
+      <div class="player-volume-control" style={{ display: "flex", alignItems: "center", gap: 6, marginRight: 16 }}>
+        <button
+          class="icon-btn"
+          title={muted ? "取消静音" : "静音"}
+          aria-label={muted ? "取消静音" : "静音"}
+          onClick={() => setMuted(!muted)}
+          style={{ padding: 4 }}
+        >
+          {muted ? <IconMute size={18} /> : <IconVolume size={18} />}
+        </button>
+        <input
+          type="range"
+          min={0}
+          max={1}
+          step={0.05}
+          value={muted ? 0 : volume}
+          onInput={(e) => {
+            const v = Number((e.target as HTMLInputElement).value);
+            setVolume(v);
+            if (v > 0) setMuted(false);
+          }}
+          style={{ width: 60, height: 4, borderRadius: 2, cursor: "pointer" }}
+          aria-label="播放音量"
+        />
       </div>
 
       <div class="player-speed-control">

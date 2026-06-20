@@ -16,9 +16,15 @@ function readStored(): Theme {
   return "system";
 }
 
+function getInitialEffective(): "light" | "dark" {
+  const choice = readStored();
+  if (choice === "system") return detectSystem();
+  return choice;
+}
+
 export const themeChoice = signal<Theme>(readStored());
 
-export const effectiveTheme = signal<"light" | "dark">("dark");
+export const effectiveTheme = signal<"light" | "dark">(getInitialEffective());
 
 function applyTheme() {
   const eff = themeChoice.value === "system" ? detectSystem() : themeChoice.value;
