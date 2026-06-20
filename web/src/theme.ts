@@ -24,6 +24,16 @@ function applyTheme() {
   const eff = themeChoice.value === "system" ? detectSystem() : themeChoice.value;
   effectiveTheme.value = eff;
   document.documentElement.setAttribute("data-theme", eff);
+
+  // 动态更新 meta theme-color
+  let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+  const color = eff === "dark" ? "#090a0f" : "#f8fafc";
+  if (!metaThemeColor) {
+    metaThemeColor = document.createElement("meta");
+    metaThemeColor.setAttribute("name", "theme-color");
+    document.head.appendChild(metaThemeColor);
+  }
+  metaThemeColor.setAttribute("content", color);
 }
 
 applyTheme();
