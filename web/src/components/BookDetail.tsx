@@ -142,22 +142,22 @@ export function BookDetail({ bookId }: { bookId: string }) {
 
           <div class="book-actions">
             <button class="btn" onClick={generateAll}>
-              <IconRefresh size={16} /> 生成缺失章节
+              <IconRefresh size={16} /> 生成缺失
             </button>
             <button
               class="btn ghost"
               disabled={selectedCount.value === 0}
               onClick={generateSelected}
             >
-              生成选中章节 ({selectedCount.value})
+              生成选中{selectedCount.value > 0 ? `(${selectedCount.value})` : ""}
             </button>
             {done > 0 && (
               <button class="btn ghost" onClick={handleExport}>
-                <IconDownload size={16} /> 导出有声书
+                <IconDownload size={16} /> 导出整书
               </button>
             )}
             <button class="btn danger" title="删除书籍" onClick={() => deleteBook(bookId)}>
-              <IconTrash size={16} />
+              <IconTrash size={16} /> 删除
             </button>
           </div>
         </div>

@@ -1420,13 +1420,21 @@ a:hover {
   
   .book-actions {
     width: 100%;
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--sp-2);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--sp-1);
+    margin-top: var(--sp-2);
   }
   
   .book-actions .btn {
-    width: 100%;
+    flex: 1;
+    padding: 8px 4px;
+    font-size: var(--fs-xs);
+    gap: 4px;
+    white-space: nowrap;
+    justify-content: center;
   }
   
   .book-detail-main {
