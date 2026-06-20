@@ -34,7 +34,16 @@ export function SettingsPanel() {
     if (isOpen) {
       setRender(true);
       const timer = setTimeout(() => setAnimOpen(true), 10);
-      return () => clearTimeout(timer);
+
+      const handleEsc = (e: KeyboardEvent) => {
+        if (e.key === "Escape") settingsOpen.value = false;
+      };
+      window.addEventListener("keydown", handleEsc);
+
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener("keydown", handleEsc);
+      };
     } else {
       setAnimOpen(false);
       const timer = setTimeout(() => setRender(false), 200);
