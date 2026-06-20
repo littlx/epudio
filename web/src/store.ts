@@ -257,6 +257,32 @@ export async function deleteBook(bookId: string) {
   }
 }
 
+export async function deleteChapter(bookId: string, index: number) {
+  if (currentBook.value?.running) {
+    showToast("该书正在生成中，暂无法删除章节", "error");
+    return;
+  }
+  if (!confirm("确定要删除这一章吗？该操作不可恢复。")) {
+    return;
+  }
+  try {
+    await api.deleteChapter(bookId, index);
+    showToast("章节已删除", "success");
+    if (selectedIndexes.value.has(index)) {
+      const s = new Set(selectedIndexes.value);
+      s.delete(index);
+      selectedIndexes.value = s;
+    }
+    if (currentBook.value && currentBook.value.book_id === bookId) {
+      const chapters = currentBook.value.chapters.filter((c) => c.index !== index);
+      currentBook.value = { ...currentBook.value, chapters };
+      bookCache.set(bookId, currentBook.value);
+    }
+  } catch (e: any) {
+    showToast(e.message || "删除失败", "error");
+  }
+}
+
 export async function updateBookTitle(bookId: string, title: string) {
   try {
     await api.updateBook(bookId, { title });

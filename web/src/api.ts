@@ -86,6 +86,11 @@ export const api = {
       method: "POST",
     }).then(json<{ message: string }>),
 
+  deleteChapter: (id: string, n: number) =>
+    fetch(`${BASE}/books/${id}/chapters/${n}`, {
+      method: "DELETE",
+    }).then(json<{ message: string }>),
+
   getScript: (id: string, n: number) =>
     fetch(`${BASE}/books/${id}/chapters/${n}/script`).then((res) => {
       if (!res.ok) throw new Error("请求失败");

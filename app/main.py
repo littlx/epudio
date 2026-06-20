@@ -321,6 +321,36 @@ async def api_update_chapter_script(book_id: str, n: int, req: EditScriptRequest
     return Message(message="已开始重新合成").model_dump()
 
 
+@app.delete("/api/books/{book_id}/chapters/{n}")
+async def api_delete_chapter(book_id: str, n: int):
+    """手动删除章节。"""
+    meta = _require_book(book_id)
+    if n not in {c.index for c in meta.chapters}:
+        raise HTTPException(status_code=400, detail="章节不存在")
+    if jobs.is_any_running(book_id):
+        raise HTTPException(status_code=409, detail="该书正在生成中，暂无法删除章节")
+
+    # 从 chapters 中删除
+    meta.chapters = [c for c in meta.chapters if c.index != n]
+    store.save_meta(meta)
+
+    # 删除存储的物理文件
+    for p in (
+        settings.chapter_text_path(book_id, n),
+        settings.script_path(book_id, n),
+        settings.audio_path(book_id, n),
+    ):
+        try:
+            if p.exists():
+                p.unlink()
+        except Exception:
+            pass
+
+    await jobs._publish_book_state_once(meta, False)
+    await sse_mod.publish_done(book_id)
+    return Message(message="章节已成功删除").model_dump()
+
+
 @app.post("/api/books/{book_id}/chapters/{n}/regenerate")
 async def api_regenerate_chapter(book_id: str, n: int):
     meta = _require_book(book_id)

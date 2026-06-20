@@ -698,6 +698,15 @@ a:hover {
   gap: var(--sp-3);
   flex-shrink: 0;
 }
+.chapter-row .delete-btn {
+  color: var(--danger);
+  opacity: 0.5;
+  transition: all var(--dur) var(--ease);
+}
+.chapter-row .delete-btn:hover {
+  opacity: 1;
+  background: var(--danger-soft);
+}
 
 /* 状态徽章 */
 .status-badge {

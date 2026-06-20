@@ -7,10 +7,18 @@ import {
   isPlaying,
   regenerateChapter,
   scriptModal,
+  deleteChapter,
 } from "../store";
 import type { Chapter, ChapterStatus } from "../types";
 import { formatDuration, formatChars } from "../utils";
-import { IconPlay, IconPause, IconDoc, IconRefresh, IconChevron } from "./icons";
+import {
+  IconPlay,
+  IconPause,
+  IconDoc,
+  IconRefresh,
+  IconChevron,
+  IconTrash,
+} from "./icons";
 
 const STATUS_LABEL: Record<ChapterStatus, string> = {
   pending: "待生成",
@@ -146,6 +154,17 @@ export function ChapterRow({
             <IconRefresh size={14} /> 重做
           </button>
         )}
+        {chapter.status !== "interpreting" &&
+          chapter.status !== "synthesizing" &&
+          chapter.status !== "retrying" && (
+            <button
+              class="icon-btn delete-btn"
+              title="删除章节"
+              onClick={() => deleteChapter(bookId, chapter.index)}
+            >
+              <IconTrash size={16} />
+            </button>
+          )}
       </div>
     </div>
   );
