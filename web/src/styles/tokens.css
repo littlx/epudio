@@ -16,41 +16,53 @@
   /* 圆角 */
   --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 18px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 999px;
 
   /* 字号阶梯 */
-  --fs-xs: 11px;
-  --fs-sm: 13px;
-  --fs-base: 15px;
-  --fs-md: 17px;
-  --fs-lg: 20px;
-  --fs-xl: 24px;
-  --fs-2xl: 30px;
+  --fs-xs: 12px;
+  --fs-sm: 14px;
+  --fs-base: 16px;
+  --fs-md: 18px;
+  --fs-lg: 22px;
+  --fs-xl: 26px;
+  --fs-2xl: 34px;
 
-  /* 动效 */
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --dur: 0.2s;
+  /* 动效与过渡 */
+  --ease: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-elastic: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  --dur: 0.25s;
+  --dur-slow: 0.4s;
 
-  --topbar-h: 56px;
+  --topbar-h: 64px;
 }
 
-/* ---- 暗色主题（默认） ---- */
+/* ---- 曜石星云暗色主题 (Polar Nebula Dark) ---- */
 [data-theme="dark"] {
-  --bg: #08090c;
-  --bg-grad: radial-gradient(1200px 600px at 80% -20%, #111524 0%, #08090c 60%);
-  --surface: #10121a;
-  --surface-2: #161824;
-  --surface-3: #1d2133;
-  --border: #212536;
-  --border-soft: #171b29;
-  --text: #e6e8ee;
-  --text-soft: #b4b9c4;
-  --muted: #8b91a0;
+  --bg: #090a0f;
+  --bg-grad: radial-gradient(circle at 50% -20%, rgba(139, 92, 246, 0.15) 0%, rgba(99, 102, 241, 0.08) 35%, rgba(9, 10, 15, 0) 70%), #090a0f;
+  --bg-grid: rgba(255, 255, 255, 0.015);
+  
+  --surface: rgba(17, 19, 30, 0.75);
+  --surface-2: rgba(26, 29, 46, 0.8);
+  --surface-3: rgba(37, 41, 64, 0.85);
+  --surface-solid: #11131e;
+  
+  --border: rgba(255, 255, 255, 0.08);
+  --border-soft: rgba(255, 255, 255, 0.04);
+  --border-glow: rgba(139, 92, 246, 0.3);
+  
+  --text: #f3f4f6;
+  --text-soft: #cbd5e1;
+  --muted: #64748b;
 
-  --accent: #5850ec;
-  --accent-2: #4f46e5;
-  --accent-soft: rgba(88, 80, 236, 0.12);
+  --accent: #8b5cf6;
+  --accent-gradient: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+  --accent-glow: rgba(139, 92, 246, 0.35);
+  --accent-2: #6366f1;
+  --accent-soft: rgba(139, 92, 246, 0.12);
+  
   --success: #10b981;
   --success-soft: rgba(16, 185, 129, 0.12);
   --warning: #f5a623;
@@ -59,34 +71,47 @@
   --danger-soft: rgba(239, 68, 68, 0.12);
 
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 16px 56px rgba(0, 0, 0, 0.55);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.6), 0 0 40px rgba(139, 92, 246, 0.05);
+  
+  --glass-blur: blur(20px) saturate(190%);
 }
 
-/* ---- 浅色主题 ---- */
+/* ---- 樱落晨曦浅色主题 (Sakura Dawn Light) ---- */
 [data-theme="light"] {
-  --bg: #f6f7fb;
-  --bg-grad: radial-gradient(1200px 600px at 80% -10%, #eef1fb 0%, #f6f7fb 55%);
-  --surface: #ffffff;
-  --surface-2: #f1f3f8;
-  --surface-3: #e7eaf2;
-  --border: #e0e4ee;
-  --border-soft: #edf0f6;
-  --text: #1a1d24;
-  --text-soft: #4a5060;
-  --muted: #7a8094;
+  --bg: #f8fafc;
+  --bg-grad: radial-gradient(circle at 50% -20%, rgba(224, 231, 255, 0.6) 0%, rgba(243, 232, 255, 0.4) 35%, rgba(248, 250, 252, 0) 70%), #f8fafc;
+  --bg-grid: rgba(99, 102, 241, 0.015);
+  
+  --surface: rgba(255, 255, 255, 0.85);
+  --surface-2: rgba(241, 245, 249, 0.9);
+  --surface-3: rgba(226, 232, 240, 0.95);
+  --surface-solid: #ffffff;
+  
+  --border: rgba(99, 102, 241, 0.08);
+  --border-soft: rgba(99, 102, 241, 0.04);
+  --border-glow: rgba(99, 102, 241, 0.2);
+  
+  --text: #0f172a;
+  --text-soft: #475569;
+  --muted: #94a3b8;
 
-  --accent: #4a6cf7;
-  --accent-2: #3a56d8;
-  --accent-soft: rgba(74, 108, 247, 0.1);
-  --success: #1fa970;
-  --success-soft: rgba(31, 169, 112, 0.12);
-  --warning: #d98800;
-  --warning-soft: rgba(217, 136, 0, 0.12);
-  --danger: #e23b3b;
-  --danger-soft: rgba(226, 59, 59, 0.1);
+  --accent: #4f46e5;
+  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+  --accent-glow: rgba(79, 70, 229, 0.2);
+  --accent-2: #7c3aed;
+  --accent-soft: rgba(79, 70, 229, 0.07);
+  
+  --success: #10b981;
+  --success-soft: rgba(16, 185, 129, 0.12);
+  --warning: #d97706;
+  --warning-soft: rgba(217, 119, 6, 0.12);
+  --danger: #dc2626;
+  --danger-soft: rgba(220, 38, 38, 0.1);
 
-  --shadow-sm: 0 1px 3px rgba(20, 30, 60, 0.08);
-  --shadow-md: 0 4px 16px rgba(20, 30, 60, 0.1);
-  --shadow-lg: 0 12px 40px rgba(20, 30, 60, 0.14);
+  --shadow-sm: 0 2px 8px rgba(99, 102, 241, 0.03);
+  --shadow-md: 0 12px 32px rgba(99, 102, 241, 0.06);
+  --shadow-lg: 0 20px 48px rgba(99, 102, 241, 0.1);
+  
+  --glass-blur: blur(20px) saturate(170%);
 }

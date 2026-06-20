@@ -73,8 +73,8 @@ export function ScriptModal() {
                   class={`turn speaker-${t.speaker === "甲" ? "a" : "b"}`}
                   key={i}
                 >
-                  <div class="speaker">{t.speaker}：</div>
-                  <div>{t.text}</div>
+                  <div class="speaker">{t.speaker}</div>
+                  <div class="speech-bubble">{t.text}</div>
                 </div>
               ))}
             </>

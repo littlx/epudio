@@ -25,12 +25,12 @@ export function pct(done: number, total: number): number {
 
 export function getBookGradient(id: string): string {
   const gradients = [
-    "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
-    "linear-gradient(135deg, #10b981 0%, #047857 100%)",
-    "linear-gradient(135deg, #6366f1 0%, #4338ca 100%)",
-    "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
-    "linear-gradient(135deg, #f43f5e 0%, #be123c 100%)",
-    "linear-gradient(135deg, #f59e0b 0%, #b45309 100%)",
+    "linear-gradient(135deg, #6366f1 0%, #312e81 50%, #1e1b4b 100%)",
+    "linear-gradient(135deg, #0ea5e9 0%, #0369a1 50%, #0c4a6e 100%)",
+    "linear-gradient(135deg, #10b981 0%, #047857 50%, #064e3b 100%)",
+    "linear-gradient(135deg, #f43f5e 0%, #be123c 50%, #58081b 100%)",
+    "linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #78350f 100%)",
+    "linear-gradient(135deg, #a855f7 0%, #7c3aed 50%, #4c1d95 100%)",
   ];
   let hash = 0;
   for (let i = 0; i < id.length; i++) {
