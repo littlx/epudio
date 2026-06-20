@@ -82,8 +82,45 @@ JSON 结构：
   - 如果章节内容相对浅显或篇幅较短，则只需精炼对谈（如 10-18 句）讲清核心要点，避免冗余和废话。
 """
 
+_MONOLOGUE_REQ = """
+要求：
+1. **不要照搬或朗读原文**，要做真正的"深度解读"：
+   - 针对科学与前沿技术内容：系统性地剖析核心公式/定理/算法背后的直觉逻辑与物理意义，阐释其前沿突破、面临的局限性及未来的应用图景，字里行间保持严谨与深度。
+   - 针对哲学与社会科学内容：层层剖析核心概念定义，厘清其论证逻辑与思想脉络，对比不同学术流派的观点，并探讨其对当代社会、制度、文化或个体心智的深刻启示。
+2. 你是一位声音富有质感、充满思想深度的独立学者/解读者。你需要以娓娓道来、语调沉稳、引人入胜的方式，像在做一场高级而有亲和力的个人学术演讲或精品独白课。
+3. 语言应兼顾理性严谨与口语化的完美平衡：使用自然流畅、口语化、平易近人的自述语气（例如使用“我们来看这个概念…”、“我常在想…”），避免死板的说教感和空洞的念稿感。
+4. 适当使用精准的隐喻和生活类比来降低高深理论的理解门槛，但类比必须严谨合乎逻辑。可以引用名言金句，以增强启发性。
+5. 输出必须是 JSON，且只输出 JSON，不要任何多余文字、不要 markdown 代码块标记。
+
+JSON 结构：
+{
+  "title": "这一期解读的标题（10-20字，结合科学/哲学/社科要素，极具启发性与吸引力）",
+  "summary": "一两句话概括这章你解读的核心要点与思想精髓",
+  "turns": [
+    {"speaker": "甲", "text": "【引言/开场】……"},
+    {"speaker": "甲", "text": "【概念剖析】……"},
+    ...
+  ]
+}
+
+约束：
+- speaker 必须全部为 "甲"，代表你这位独立讲述者。
+- 将你的解读内容拆分为多个连贯的段落，每段 text 控制在 80-250 字，段落之间逻辑严密、层层递进，适合沉浸式聆听。
+- **对话的总段数（turns 数量）应完全由本章原文的复杂度、容量与信息深度决定**：
+  - 如果章节讨论的是复杂的哲学思辨、前沿科学机理或密集的社会学理论，请展开充分剖析（可达 12-25 个段落），层层剖析讲透；
+  - 如果章节内容相对浅显或篇幅较短，则只需精炼解读（如 6-12 个段落）讲清核心要点，避免冗余和废话。
+"""
+
+
 
 def _system_prompt(style: InterpretStyle) -> str:
+    if style == "monologue":
+        intro = (
+            "你是一位富有思想深度的中文独立解读者。"
+            "你正在为听众深度解读一本书的某一章，以单人独白、娓娓道来的精品课形式展开。"
+            "你专注于硬核科学、前沿科技、哲学与社会科学等理性与学术领域的知识传播。"
+        )
+        return intro + _MONOLOGUE_REQ
     return _STYLE_INTRO.get(style, _STYLE_INTRO["dialogue"]) + _COMMON_REQ
 
 
@@ -187,7 +224,7 @@ def _extract_json(content: str) -> dict[str, Any]:
     )
 
 
-def _normalize_script(data: dict[str, Any]) -> Script:
+def _normalize_script(data: dict[str, Any], style: InterpretStyle) -> Script:
     turns_raw = data.get("turns") or []
     turns: list[Turn] = []
     last = ""
@@ -196,14 +233,17 @@ def _normalize_script(data: dict[str, Any]) -> Script:
         text = str(t.get("text", "")).strip()
         if not text:
             continue
-        if speaker.startswith("甲"):
+        if style == "monologue":
             speaker = "甲"
-        elif speaker.startswith("乙"):
-            speaker = "乙"
         else:
-            speaker = "乙" if last == "甲" else "甲"
-        if speaker == last:
-            speaker = "乙" if last == "甲" else "甲"
+            if speaker.startswith("甲"):
+                speaker = "甲"
+            elif speaker.startswith("乙"):
+                speaker = "乙"
+            else:
+                speaker = "乙" if last == "甲" else "甲"
+            if speaker == last:
+                speaker = "乙" if last == "甲" else "甲"
         turns.append(Turn(speaker=speaker, text=text))
         last = speaker
     if not turns:
@@ -308,7 +348,7 @@ async def interpret_chapter(
             if cb:
                 await cb("parsing", "解析解读脚本…", 0.85)
             data = _extract_json(content)
-            return _normalize_script(data)
+            return _normalize_script(data, style)
         except Exception as e:
             last_err = e
             log.warning(

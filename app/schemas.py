@@ -24,7 +24,7 @@ Stage = Literal[
 ]
 
 # 解读风格
-InterpretStyle = Literal["deep", "casual", "storytelling", "dialogue"]
+InterpretStyle = Literal["deep", "casual", "storytelling", "dialogue", "monologue"]
 
 # 主题
 Theme = Literal["light", "dark", "system"]

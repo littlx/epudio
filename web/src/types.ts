@@ -18,7 +18,7 @@ export type Stage =
   | "done"
   | "error";
 
-export type InterpretStyle = "deep" | "casual" | "storytelling" | "dialogue";
+export type InterpretStyle = "deep" | "casual" | "storytelling" | "dialogue" | "monologue";
 export type Theme = "light" | "dark" | "system";
 
 export interface Chapter {

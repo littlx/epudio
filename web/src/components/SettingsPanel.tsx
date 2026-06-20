@@ -17,6 +17,7 @@ const STYLE_OPTIONS: { value: InterpretStyle; label: string; desc: string }[] = 
   { value: "deep", label: "深度解读", desc: "学理分析、文本细读，偏严谨" },
   { value: "casual", label: "通俗讲解", desc: "大白话讲明白，门槛低" },
   { value: "storytelling", label: "评书式", desc: "戏剧化叙述，生动有悬念" },
+  { value: "monologue", label: "单人独白", desc: "一位解读者娓娓道来，进行系统而透彻的深度剖析" },
 ];
 
 export function SettingsPanel() {
