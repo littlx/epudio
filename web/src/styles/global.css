@@ -695,17 +695,35 @@ a:hover {
 .chapter-row .ch-actions {
   display: flex;
   align-items: center;
-  gap: var(--sp-3);
+  gap: var(--sp-2);
   flex-shrink: 0;
 }
-.chapter-row .delete-btn {
-  color: var(--danger);
-  opacity: 0.5;
+.chapter-row .ch-actions .icon-btn {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--text-soft) !important;
+  opacity: 0.6;
+  width: 32px;
+  height: 32px;
   transition: all var(--dur) var(--ease);
 }
-.chapter-row .delete-btn:hover {
+.chapter-row .ch-actions .icon-btn:hover {
   opacity: 1;
-  background: var(--danger-soft);
+  color: var(--accent) !important;
+  transform: scale(1.1);
+  background: transparent !important;
+  border: none !important;
+}
+.chapter-row .ch-actions .play-btn.playing {
+  color: var(--accent) !important;
+  opacity: 1 !important;
+}
+.chapter-row .ch-actions .delete-btn {
+  color: var(--text-soft) !important;
+}
+.chapter-row .ch-actions .delete-btn:hover {
+  color: var(--danger) !important;
 }
 
 /* 状态徽章 */

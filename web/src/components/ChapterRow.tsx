@@ -121,7 +121,7 @@ export function ChapterRow({
         {chapter.status === "done" && (
           <>
             <button
-              class={`play-btn ${playing ? "playing" : ""}`}
+              class={`icon-btn play-btn ${playing ? "playing" : ""}`}
               title={playing ? "暂停" : "播放"}
               onClick={() => togglePlay(bookId, chapter.index)}
             >
