@@ -76,26 +76,45 @@ export async function loadSettings() {
 }
 
 export function goShelf() {
-  view.value = { name: "shelf" };
-  if (unsubSSE) {
-    unsubSSE();
-    unsubSSE = null;
-  }
-  selectedIndexes.value = new Set();
-  currentBook.value = null;
-  loadBooks();
+  window.location.hash = "#/";
 }
 
-export async function goBook(bookId: string) {
-  view.value = { name: "book", bookId };
-  selectedIndexes.value = new Set();
-  try {
-    const meta = await api.getBook(bookId);
-    currentBook.value = meta;
-    bookCache.set(bookId, meta);
-    subscribeSSE(bookId);
-  } catch {
-    showToast("加载书籍失败", "error");
+export function goBook(bookId: string) {
+  window.location.hash = `#/book/${bookId}`;
+}
+
+export function parseLocation(): View {
+  const hash = window.location.hash;
+  if (hash.startsWith("#/book/")) {
+    const id = hash.replace("#/book/", "");
+    if (id) return { name: "book", bookId: id };
+  }
+  return { name: "shelf" };
+}
+
+export async function syncRoute() {
+  const dest = parseLocation();
+  if (dest.name === "shelf") {
+    view.value = { name: "shelf" };
+    if (unsubSSE) {
+      unsubSSE();
+      unsubSSE = null;
+    }
+    selectedIndexes.value = new Set();
+    currentBook.value = null;
+    await loadBooks();
+  } else {
+    const bookId = dest.bookId;
+    view.value = { name: "book", bookId };
+    selectedIndexes.value = new Set();
+    try {
+      const meta = await api.getBook(bookId);
+      currentBook.value = meta;
+      bookCache.set(bookId, meta);
+      subscribeSSE(bookId);
+    } catch {
+      showToast("加载书籍失败", "error");
+    }
   }
 }
 

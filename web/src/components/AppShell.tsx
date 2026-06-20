@@ -3,7 +3,7 @@ import { useEffect } from "preact/hooks";
 import {
   view,
   goShelf,
-  loadBooks,
+  syncRoute,
   loadSettings,
   settingsOpen,
   hasApiKey,
@@ -19,8 +19,16 @@ import { IconSun, IconMoon, IconSettings, IconBack, IconAlert } from "./icons";
 
 export function AppShell() {
   useEffect(() => {
-    loadBooks();
     loadSettings();
+    syncRoute();
+
+    const handleHashChange = () => {
+      syncRoute();
+    };
+    window.addEventListener("hashchange", handleHashChange);
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
   }, []);
 
   const v = view.value;
