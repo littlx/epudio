@@ -13,6 +13,7 @@ import {
 import { api } from "../api";
 import { ChapterRow } from "./ChapterRow";
 import { IconDownload, IconTrash, IconRefresh } from "./icons";
+import { getBookGradient } from "../utils";
 
 export function BookDetail({ bookId }: { bookId: string }) {
   const meta = currentBook.value;
@@ -48,44 +49,57 @@ export function BookDetail({ bookId }: { bookId: string }) {
   };
 
   return (
-    <div>
-      <div class="book-header">
-        <div>
+    <div class="book-detail-container">
+      <div class="book-detail-hero">
+        <div class="book-hero-cover" style={{ background: getBookGradient(meta.book_id) }}>
+          <div class="cover-title">{meta.title}</div>
+          <div class="cover-author">{meta.author || "未知作者"}</div>
+          <div class="cover-spine" />
+        </div>
+        <div class="book-hero-info">
           <h2>{meta.title}</h2>
-          <p class="muted">
-            {meta.author || "未知作者"} · 共 {total} 章
-            {err > 0 && ` · 失败 ${err}`}
-          </p>
-        </div>
-        <div class="book-actions">
-          <button class="btn" onClick={generateAll}>
-            <IconRefresh size={16} /> 生成缺失
-          </button>
-          <button
-            class="btn ghost"
-            disabled={selectedCount.value === 0}
-            onClick={generateSelected}
-          >
-            生成选中 ({selectedCount.value})
-          </button>
-          {done > 0 && (
-            <button class="btn ghost" onClick={handleExport}>
-              <IconDownload size={16} /> 导出
-            </button>
-          )}
-          <button class="btn danger" onClick={() => deleteBook(bookId)}>
-            <IconTrash size={16} />
-          </button>
-        </div>
-      </div>
+          <p class="author-name">{meta.author || "未知作者"}</p>
+          <div class="badge-row">
+            <span class="badge">共 {total} 章</span>
+            {done > 0 && <span class="badge success">已完成 {done}/{total}</span>}
+            {err > 0 && <span class="badge danger">生成失败 {err} 章</span>}
+          </div>
+          
+          <div class="progress-section">
+            <div class="progress-label">
+              <span>有声合成进度</span>
+              <span>{Math.round(p)}%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="fill" style={{ width: `${p}%` }} />
+            </div>
+            <p class="muted-status">
+              {meta.running ? "正在执行后台生成服务…" : err > 0 ? "部分章节生成失败，您可以勾选并重试" : "所有章节已处于最新状态"}
+            </p>
+          </div>
 
-      <div class="progress-bar">
-        <div class="fill" style={{ width: `${p}%` }} />
+          <div class="book-actions">
+            <button class="btn" onClick={generateAll}>
+              <IconRefresh size={16} /> 生成缺失章节
+            </button>
+            <button
+              class="btn ghost"
+              disabled={selectedCount.value === 0}
+              onClick={generateSelected}
+            >
+              生成选中章节 ({selectedCount.value})
+            </button>
+            {done > 0 && (
+              <button class="btn ghost" onClick={handleExport}>
+                <IconDownload size={16} /> 导出有声书
+              </button>
+            )}
+            <button class="btn danger" title="删除书籍" onClick={() => deleteBook(bookId)}>
+              <IconTrash size={16} />
+            </button>
+          </div>
+        </div>
       </div>
-      <p class="muted" style={{ margin: "8px 0 0" }}>
-        已完成 {done}/{total}
-        {meta.running ? " · 生成中…" : err > 0 ? " · 有失败章节可重做" : ""}
-      </p>
 
       <div class="chapter-toolbar">
         <label>
@@ -94,13 +108,13 @@ export function BookDetail({ bookId }: { bookId: string }) {
             checked={allSelected}
             onChange={(e) => selectAll((e.target as HTMLInputElement).checked)}
           />{" "}
-          全选
+          全选章节
         </label>
         <button class="btn sm ghost" onClick={selectPending}>
           选中未完成
         </button>
         <span class="muted" style={{ marginLeft: "auto" }}>
-          已选 {selectedCount.value} 章
+          已选中 {selectedCount.value} / {total} 章
         </span>
       </div>
 

@@ -302,8 +302,8 @@ a {
    ============================================================ */
 .book-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: var(--sp-4);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--sp-5);
 }
 .book-card {
   background: var(--surface);
@@ -313,34 +313,72 @@ a {
   cursor: pointer;
   transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease),
     box-shadow var(--dur) var(--ease);
+  display: flex;
+  flex-direction: column;
 }
 .book-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   border-color: var(--accent);
   box-shadow: var(--shadow-md);
 }
 .book-card .cover {
-  height: 140px;
-  background: linear-gradient(135deg, var(--surface-2), var(--surface-3));
+  position: relative;
+  height: 180px;
+  padding: var(--sp-4) var(--sp-4) var(--sp-4) var(--sp-5);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--muted);
+  flex-direction: column;
+  justify-content: space-between;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: inset 0 -40px 60px rgba(0, 0, 0, 0.45);
 }
-.book-card .body {
-  padding: var(--sp-3);
-}
-.book-card .title {
-  font-weight: 600;
-  font-size: var(--fs-sm);
-  line-height: 1.4;
+.book-card .cover-title {
+  font-size: var(--fs-base);
+  font-weight: 700;
+  line-height: 1.35;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
-.book-card .meta {
-  margin-top: var(--sp-1);
+.book-card .cover-author {
+  font-size: var(--fs-xs);
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+.book-card .cover-spine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 12px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.25) 0%, rgba(0, 0, 0, 0.25) 60%, rgba(255, 255, 255, 0.1) 100%);
+  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.35);
+}
+.book-card .body {
+  padding: var(--sp-3) var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.book-card .meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--fs-xs);
+  color: var(--text-soft);
+  gap: var(--sp-2);
+}
+.book-card .meta-row span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.book-card .meta-date {
   font-size: var(--fs-xs);
   color: var(--muted);
 }
@@ -544,36 +582,144 @@ a {
   cursor: pointer;
 }
 
-.book-header {
+/* ============================================================
+   书籍详情区 (新版分栏现代 UI)
+   ============================================================ */
+.book-detail-container {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--sp-4);
-  margin-bottom: var(--sp-4);
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: var(--sp-6);
 }
-.book-header h2 {
+.book-detail-hero {
+  display: flex;
+  gap: var(--sp-6);
+  align-items: flex-start;
+  flex-wrap: wrap;
+  background: linear-gradient(180deg, var(--surface) 0%, rgba(16,18,26,0.6) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+  box-shadow: var(--shadow-sm);
+}
+.book-hero-cover {
+  position: relative;
+  width: 140px;
+  height: 200px;
+  border-radius: var(--radius-md);
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: inset 0 -40px 60px rgba(0, 0, 0, 0.45), var(--shadow-md);
+  flex-shrink: 0;
+}
+.book-hero-cover .cover-title {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+.book-hero-cover .cover-author {
+  font-size: 10px;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.book-hero-cover .cover-spine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 10px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0.2) 60%, rgba(255, 255, 255, 0.08) 100%);
+  box-shadow: 1px 0 2px rgba(0, 0, 0, 0.3);
+}
+.book-hero-info {
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.book-hero-info h2 {
   font-size: var(--fs-xl);
   font-weight: 700;
+  line-height: 1.25;
 }
-.book-actions {
+.book-hero-info .author-name {
+  font-size: var(--fs-base);
+  color: var(--text-soft);
+  margin-top: calc(-1 * var(--sp-2));
+}
+.book-hero-info .badge-row {
   display: flex;
   gap: var(--sp-2);
   flex-wrap: wrap;
 }
-
-/* 进度条 */
-.progress-bar {
+.book-hero-info .badge {
+  font-size: var(--fs-xs);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  color: var(--text-soft);
+  font-weight: 600;
+  border: 1px solid var(--border);
+}
+.book-hero-info .badge.success {
+  background: var(--success-soft);
+  color: var(--success);
+  border-color: transparent;
+}
+.book-hero-info .badge.danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-color: transparent;
+}
+.book-hero-info .progress-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: var(--sp-2) 0;
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-soft);
+}
+.book-hero-info .progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-soft);
+}
+.book-hero-info .progress-bar {
   height: 6px;
   background: var(--surface-3);
   border-radius: var(--radius-full);
   overflow: hidden;
 }
-.progress-bar .fill {
+.book-hero-info .progress-bar .fill {
   height: 100%;
   background: linear-gradient(90deg, var(--accent), var(--success));
   border-radius: var(--radius-full);
   transition: width 0.4s var(--ease);
+}
+.book-hero-info .muted-status {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.book-actions {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  margin-top: var(--sp-1);
 }
 
 /* ============================================================
@@ -864,8 +1010,24 @@ a {
   .player-bar .player-time-display {
     margin-left: auto;
   }
-  .book-header {
+  .book-detail-hero {
     flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--sp-4);
+  }
+  .book-hero-info {
+    align-items: center;
+    width: 100%;
+  }
+  .book-hero-info .badge-row {
+    justify-content: center;
+  }
+  .book-hero-info .progress-section {
+    width: 100%;
+  }
+  .book-actions {
+    width: 100%;
   }
   .book-actions .btn {
     flex: 1;

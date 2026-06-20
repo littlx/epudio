@@ -3,8 +3,8 @@ import { useRef, useState } from "preact/hooks";
 import { books, shelfLoading, goBook, loadBooks, showToast } from "../store";
 import { api } from "../api";
 import type { BookSummary } from "../types";
-import { formatTime, pct } from "../utils";
-import { IconUpload, IconBook } from "./icons";
+import { formatTime, pct, getBookGradient } from "../utils";
+import { IconUpload } from "./icons";
 
 export function BookShelf() {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -91,32 +91,21 @@ function BookCard({ book }: { book: BookSummary }) {
   const p = pct(book.done_count, book.chapter_count);
   return (
     <div class="book-card" onClick={() => goBook(book.book_id)}>
-      <div class="cover">
-        <IconBook size={40} />
+      <div class="cover" style={{ background: getBookGradient(book.book_id) }}>
+        <div class="cover-title">{book.title}</div>
+        <div class="cover-author">{book.author || "未知作者"}</div>
+        <div class="cover-spine" />
       </div>
       <div class="body">
-        <div class="title">{book.title}</div>
-        <div
-          class="meta"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginTop: 8,
-          }}
-        >
-          <span>
-            {book.author || "未知作者"} · {book.chapter_count}章
-          </span>
+        <div class="meta-row">
+          <span>{book.chapter_count}章 · {book.done_count}/{book.chapter_count}已完成</span>
           {p > 0 && (
             <div class="progress-ring" style={{ "--pct": p } as any}>
               <span class="pct-txt">{p}%</span>
             </div>
           )}
         </div>
-        <div class="meta" style={{ marginTop: 4 }}>
-          {formatTime(book.created_at)} · {book.done_count}/{book.chapter_count}已完成
-        </div>
+        <div class="meta-date">{formatTime(book.created_at)} 上传</div>
       </div>
     </div>
   );
