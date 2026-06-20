@@ -205,6 +205,22 @@ export async function deleteBook(bookId: string) {
   }
 }
 
+export async function updateBookTitle(bookId: string, title: string) {
+  try {
+    await api.updateBook(bookId, { title });
+    if (currentBook.value && currentBook.value.book_id === bookId) {
+      currentBook.value = { ...currentBook.value, title };
+      bookCache.set(bookId, currentBook.value);
+    }
+    books.value = books.value.map((b) =>
+      b.book_id === bookId ? { ...b, title } : b
+    );
+    showToast("修改成功", "success");
+  } catch (e: any) {
+    showToast(e.message || "修改书名失败", "error");
+  }
+}
+
 // ---- 播放 ----
 export async function togglePlay(bookId: string, index: number) {
   const cur = player.value;

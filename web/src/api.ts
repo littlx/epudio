@@ -40,6 +40,13 @@ export const api = {
   deleteBook: (id: string) =>
     fetch(`${BASE}/books/${id}`, { method: "DELETE" }).then(json<{ message: string }>),
 
+  updateBook: (id: string, req: { title: string }) =>
+    fetch(`${BASE}/books/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req),
+    }).then(json<BookSummary>),
+
   generate: (id: string, req: GenerateRequest) =>
     fetch(`${BASE}/books/${id}/generate`, {
       method: "POST",

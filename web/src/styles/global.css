@@ -915,6 +915,54 @@ a:hover {
   line-height: 1.25;
   letter-spacing: -0.02em;
 }
+.book-title-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  cursor: pointer;
+  border-bottom: 2px dashed transparent;
+  transition: border-color var(--dur) var(--ease);
+}
+.book-title-heading:hover {
+  border-color: var(--border-glow);
+}
+.edit-icon-indicator {
+  opacity: 0;
+  color: var(--muted);
+  transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease);
+  display: inline-flex;
+  align-items: center;
+}
+.book-title-heading:hover .edit-icon-indicator {
+  opacity: 1;
+}
+.book-title-heading:hover .edit-icon-indicator:hover {
+  color: var(--accent);
+}
+
+.title-edit-form {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  max-width: 500px;
+}
+.title-edit-input {
+  flex: 1;
+  font-size: var(--fs-md);
+  font-weight: 700;
+  padding: 6px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  transition: all var(--dur) var(--ease);
+}
+.title-edit-input:focus {
+  border-color: var(--accent);
+  background: var(--surface-3);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
 .book-hero-info .author-name {
   font-size: var(--fs-base);
   font-weight: 600;

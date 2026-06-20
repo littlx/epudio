@@ -149,6 +149,29 @@ async def api_delete_book(book_id: str):
     return Message(message="已删除").model_dump()
 
 
+from pydantic import BaseModel
+
+
+class UpdateBookRequest(BaseModel):
+    title: str
+
+
+@app.put("/api/books/{book_id}")
+async def api_update_book(book_id: str, req: UpdateBookRequest):
+    meta = _require_book(book_id)
+    t = req.title.strip()
+    if not t:
+        raise HTTPException(status_code=400, detail="书名不能为空")
+    meta.title = t
+    store.save_meta(meta)
+    
+    # 广播事件，令连接的客户端重拉 meta 刷新视图
+    bus = sse_mod.get_bus(book_id)
+    await bus.publish({"type": "book"})
+    
+    return _summary(meta).model_dump()
+
+
 @app.post("/api/books/{book_id}/generate")
 async def api_generate(book_id: str, req: GenerateRequest):
     meta = _require_book(book_id)

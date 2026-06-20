@@ -1,4 +1,5 @@
 // 书详情：章节列表 + 多选生成 + 导出 + 删除 + 进度
+import { useState, useEffect } from "preact/hooks";
 import {
   currentBook,
   selectedIndexes,
@@ -9,10 +10,11 @@ import {
   generateSelected,
   deleteBook,
   showToast,
+  updateBookTitle,
 } from "../store";
 import { api } from "../api";
 import { ChapterRow } from "./ChapterRow";
-import { IconDownload, IconTrash, IconRefresh } from "./icons";
+import { IconDownload, IconTrash, IconRefresh, IconEdit } from "./icons";
 import { getBookGradient } from "../utils";
 
 export function BookDetail({ bookId }: { bookId: string }) {
@@ -25,6 +27,32 @@ export function BookDetail({ bookId }: { bookId: string }) {
       </div>
     );
   }
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(meta.title);
+
+  useEffect(() => {
+    setEditTitle(meta.title);
+  }, [meta.book_id, meta.title]);
+
+  const handleSave = () => {
+    const t = editTitle.trim();
+    if (!t) {
+      showToast("书名不能为空", "error");
+      return;
+    }
+    updateBookTitle(meta.book_id, t);
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSave();
+    } else if (e.key === "Escape") {
+      setEditTitle(meta.title);
+      setIsEditing(false);
+    }
+  };
 
   const total = meta.chapters.length;
   const done = meta.chapters.filter((c) => c.status === "done").length;
@@ -57,7 +85,41 @@ export function BookDetail({ bookId }: { bookId: string }) {
           <div class="cover-spine" />
         </div>
         <div class="book-hero-info">
-          <h2>{meta.title}</h2>
+          {isEditing ? (
+            <div class="title-edit-form">
+              <input
+                type="text"
+                class="title-edit-input"
+                value={editTitle}
+                onInput={(e) => setEditTitle((e.target as HTMLInputElement).value)}
+                onKeyDown={handleKeyDown}
+                autoFocus
+              />
+              <button class="btn sm" onClick={handleSave}>
+                保存
+              </button>
+              <button
+                class="btn sm ghost"
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditTitle(meta.title);
+                }}
+              >
+                取消
+              </button>
+            </div>
+          ) : (
+            <h2
+              class="book-title-heading"
+              onClick={() => setIsEditing(true)}
+              title="点击编辑书名"
+            >
+              {meta.title}
+              <span class="edit-icon-indicator">
+                <IconEdit size={16} />
+              </span>
+            </h2>
+          )}
           <p class="author-name">{meta.author || "未知作者"}</p>
           <div class="badge-row">
             <span class="badge">共 {total} 章</span>
