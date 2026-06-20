@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPUB 有声解读</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">🎙️</span>
+      <h1>EPUB 有声解读</h1>
+    </div>
+    <button id="backBtn" class="ghost hidden">← 返回书架</button>
+  </header>
+
+  <!-- 全局常驻播放器：返回书架或切换书籍时也不中断 -->
+  <div id="playerBar" class="player-bar hidden">
+    <div class="player-info">
+      <span id="playerNow" class="muted">未播放</span>
+    </div>
+    <audio id="globalPlayer" controls preload="none"></audio>
+    <button id="playerPrev" class="small ghost" title="上一章">⏮</button>
+    <button id="playerNext" class="small ghost" title="下一章">⏭</button>
+  </div>
+
+  <main id="app">
+    <!-- 书架视图 -->
+    <section id="shelfView">
+      <div class="upload-card">
+        <h2>上传 EPUB</h2>
+        <p class="muted">把电子书转成两位主持人深度对谈的有声解读，每章一段音频。</p>
+        <form id="uploadForm">
+          <input type="file" id="fileInput" accept=".epub" required />
+          <button type="submit">上传并解析</button>
+        </form>
+        <div id="uploadMsg" class="msg"></div>
+        <div id="configBanner" class="banner hidden"></div>
+      </div>
+
+      <h2 class="section-title">书架</h2>
+      <div id="bookList" class="book-list">
+        <p class="muted" id="emptyHint">还没有书，上传一本开始吧。</p>
+      </div>
+    </section>
+
+    <!-- 书详情视图 -->
+    <section id="bookView" class="hidden">
+      <div class="book-header">
+        <div>
+          <h2 id="bookTitle"></h2>
+          <p id="bookAuthor" class="muted"></p>
+        </div>
+        <div class="book-actions">
+          <button id="generateAllBtn">生成全部</button>
+          <button id="generateSelectedBtn" disabled>生成选中</button>
+          <button id="deleteBtn" class="danger">删除</button>
+        </div>
+      </div>
+
+      <div class="progress-bar">
+        <div id="progressFill"></div>
+      </div>
+      <p id="progressText" class="muted"></p>
+
+      <div class="chapter-toolbar">
+        <label class="select-all"><input type="checkbox" id="selectAll" /> 全选</label>
+        <button id="selectPendingBtn" class="small ghost">选中未完成</button>
+        <span id="selectCount" class="muted">已选 0 章</span>
+      </div>
+
+      <div id="chapterList" class="chapter-list"></div>
+    </section>
+  </main>
+
+  <!-- 对谈文稿弹窗 -->
+  <div id="scriptModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-head">
+        <h3 id="scriptTitle">解读文稿</h3>
+        <button id="closeScript" class="ghost">✕</button>
+      </div>
+      <div id="scriptBody" class="script-body"></div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

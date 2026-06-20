@@ -1,0 +1,362 @@
+{
+  "book_id": "bcc71c521b8b",
+  "title": "底层逻辑 看清这个世界的底牌（拥有看透世界的底牌，启动“开挂”的人生。“5分钟商学院”背后的思维方式）",
+  "author": "刘润",
+  "cover": null,
+  "created_at": 1781915473.8401139,
+  "chapters": [
+    {
+      "index": 0,
+      "title": "作者简介",
+      "char_count": 204,
+      "status": "pending",
+      "message": "",
+      "audio_seconds": null
+    },
+    {
+      "index": 1,
+      "title": "序言",
+      "char_count": 1485,
+      "status": "pending",
+      "message": "",
+      "audio_seconds": null
+    },
+    {
+      "index": 2,
+      "title": "第1章 是非对错的底层逻辑",
+      "char_count": 1828,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 254.784
+    },
+    {
+      "index": 3,
+      "title": "人性、道德和法律",
+      "char_count": 1543,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 267.912
+    },
+    {
+      "index": 4,
+      "title": "人生的三层智慧：博弈、定力、选择",
+      "char_count": 3414,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 292.632
+    },
+    {
+      "index": 5,
+      "title": "公理体系VS逻辑推演",
+      "char_count": 4634,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 261.672
+    },
+    {
+      "index": 6,
+      "title": "第2章 思考问题的底层逻辑",
+      "char_count": 1364,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 293.76
+    },
+    {
+      "index": 7,
+      "title": "如何防止“注射式洗脑”",
+      "char_count": 2825,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 304.92
+    },
+    {
+      "index": 8,
+      "title": "如何赢得一场辩论",
+      "char_count": 1943,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 282.576
+    },
+    {
+      "index": 9,
+      "title": "普通和优秀的差距，在于解决问题的方式不同",
+      "char_count": 2573,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 262.2
+    },
+    {
+      "index": 10,
+      "title": "如何快速洞察本质",
+      "char_count": 5400,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 219.024
+    },
+    {
+      "index": 11,
+      "title": "流程、制度与系统",
+      "char_count": 2990,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 215.448
+    },
+    {
+      "index": 12,
+      "title": "逻辑思维与逻辑闭环",
+      "char_count": 6435,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 285.552
+    },
+    {
+      "index": 13,
+      "title": "复利思维",
+      "char_count": 3994,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 221.064
+    },
+    {
+      "index": 14,
+      "title": "概率思维",
+      "char_count": 4678,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 278.592
+    },
+    {
+      "index": 15,
+      "title": "数学思维",
+      "char_count": 7552,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 224.256
+    },
+    {
+      "index": 16,
+      "title": "系统思维",
+      "char_count": 2570,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 191.952
+    },
+    {
+      "index": 17,
+      "title": "第3章 个体进化的底层逻辑",
+      "char_count": 6514,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 402.84
+    },
+    {
+      "index": 18,
+      "title": "把工作当成玩",
+      "char_count": 2713,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 287.472
+    },
+    {
+      "index": 19,
+      "title": "如何做好时间管理",
+      "char_count": 4172,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 345.24
+    },
+    {
+      "index": 20,
+      "title": "指数级增长、正态分布和幂律分布",
+      "char_count": 3445,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 284.76
+    },
+    {
+      "index": 21,
+      "title": "把事做对，创造10倍价值",
+      "char_count": 2563,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 238.896
+    },
+    {
+      "index": 22,
+      "title": "人脉的本质是给予价值、平等交换",
+      "char_count": 3035,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 208.848
+    },
+    {
+      "index": 23,
+      "title": "知识、技能与态度",
+      "char_count": 1887,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 162.168
+    },
+    {
+      "index": 24,
+      "title": "心态高过云端，姿态埋入地底",
+      "char_count": 1046,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 191.064
+    },
+    {
+      "index": 25,
+      "title": "人人都应该是自己的CEO",
+      "char_count": 2768,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 238.032
+    },
+    {
+      "index": 26,
+      "title": "艺术家为人类带来自由",
+      "char_count": 666,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 249.24
+    },
+    {
+      "index": 27,
+      "title": "第4章 理解他人的底层逻辑",
+      "char_count": 3729,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 174.408
+    },
+    {
+      "index": 28,
+      "title": "幽默，是溢出的智慧",
+      "char_count": 2529,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 255.312
+    },
+    {
+      "index": 29,
+      "title": "所谓洞察本质，就是会打比方",
+      "char_count": 3531,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 232.656
+    },
+    {
+      "index": 30,
+      "title": "边界感的本质，是对所有权的认知",
+      "char_count": 2932,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 245.784
+    },
+    {
+      "index": 31,
+      "title": "每个创业者背后，都有大量多巴胺的支撑",
+      "char_count": 3545,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 293.52
+    },
+    {
+      "index": 32,
+      "title": "第5章 社会协作的底层逻辑",
+      "char_count": 2175,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 316.68
+    },
+    {
+      "index": 33,
+      "title": "找到并利用自己的战略势能",
+      "char_count": 2812,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 202.68
+    },
+    {
+      "index": 34,
+      "title": "产品价格到底应该由什么决定",
+      "char_count": 2871,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 229.248
+    },
+    {
+      "index": 35,
+      "title": "利润，来自没有竞争",
+      "char_count": 2529,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 227.448
+    },
+    {
+      "index": 36,
+      "title": "没有KPI，也能管好公司",
+      "char_count": 3959,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 275.64
+    },
+    {
+      "index": 37,
+      "title": "让优秀员工成为事业合伙人",
+      "char_count": 4471,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 322.968
+    },
+    {
+      "index": 38,
+      "title": "勤劳能创富，但勤劳者能分到财富吗",
+      "char_count": 4267,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 212.304
+    },
+    {
+      "index": 39,
+      "title": "一切的分钱方式，无外乎优先和劣后",
+      "char_count": 3825,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 316.8
+    },
+    {
+      "index": 40,
+      "title": "信用，是一个人最大的资产",
+      "char_count": 3321,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 351.912
+    },
+    {
+      "index": 41,
+      "title": "公平、公正与公开",
+      "char_count": 2230,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 231.672
+    },
+    {
+      "index": 42,
+      "title": "效率与公平",
+      "char_count": 3284,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 273.024
+    },
+    {
+      "index": 43,
+      "title": "劝酒的本质，是服从性测试",
+      "char_count": 1536,
+      "status": "done",
+      "message": "完成",
+      "audio_seconds": 295.152
+    }
+  ],
+  "running": false
+}
