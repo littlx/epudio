@@ -7,7 +7,7 @@
 - 风格切换（深度解读/通俗讲解/评书式/对谈式）
 - 令牌桶限流（DeepSeek RPM）
 - 分阶段进度回调
-- 长章节自动分段摘要，避免截断丢内容
+- 长章节直接喂入大上下文窗口；超长章节首尾截断，避免超出上下文
 - 失败自动重试（指数退避）
 """
 from __future__ import annotations
@@ -118,6 +118,7 @@ def _system_prompt(style: InterpretStyle) -> str:
         intro = (
             "你是一位富有思想深度的中文独立解读者。"
             "你正在为听众深度解读一本书的某一章，把自己当做本书的作者，以单人独白、娓娓道来的精品课形式展开。"
+            "模仿作者的写作风格"
             "你专注于硬核科学、前沿科技、哲学与社会科学等理性与学术领域的知识传播。"
         )
         return intro + _MONOLOGUE_REQ
@@ -139,8 +140,8 @@ def _build_user_prompt(
         parts.append("【前文解读要点（保持连贯，但勿重复）】")
         parts.extend(f"- {s}" for s in prev_summaries)
     parts.append("【本章原文】")
-    # 原文过长则截断（保留首尾），DeepSeek 上下文足够
-    max_chars = 18000
+    # 超长章节才截断（保留首尾），DeepSeek 上下文足够直接喂入大段原文
+    max_chars = 100000
     text = chapter_text
     if len(text) > max_chars:
         text = text[: max_chars // 2] + "\n……（中略）……\n" + text[-max_chars // 2 :]
@@ -266,36 +267,6 @@ def _get_client() -> AsyncOpenAI:
     )
 
 
-# ---- 长章节分段摘要 ----
-
-async def _summarize_for_context(
-    client: AsyncOpenAI, chapter_text: str, cb: StageCb | None
-) -> str:
-    """超长章节：先让模型生成一份浓缩摘要，作为解读的上下文，
-    避免直接截断丢失中段内容。返回摘要文本。
-    """
-    if len(chapter_text) <= 18000:
-        return chapter_text
-    if cb:
-        await cb("reading", "原文较长，先生成摘要…", 0.1)
-    resp = await client.chat.completions.create(
-        model=settings.deepseek_model,
-        messages=[
-            {
-                "role": "system",
-                "content": "用中文把下面这章原文压缩成一份2万字以内的详细摘要，保留关键信息，不要评价，只忠实浓缩。",
-            },
-            {"role": "user", "content": chapter_text},
-        ],
-        temperature=0.3,
-    )
-    summary = (resp.choices[0].message.content or "").strip()
-    # 摘要 + 原文首尾，兼顾浓缩与首尾细节
-    head = chapter_text[:4000]
-    tail = chapter_text[-4000:]
-    return f"（以下为本章浓缩摘要，供解读参考）\n{summary}\n\n（本章开头）\n{head}\n……\n（本章结尾）\n{tail}"
-
-
 async def interpret_chapter(
     book_title: str,
     author: str,
@@ -318,11 +289,8 @@ async def interpret_chapter(
     if cb:
         await cb("reading", "准备原文…", 0.05)
 
-    # 长文先摘要
-    context_text = await _summarize_for_context(client, chapter_text, cb)
-
     user_prompt = _build_user_prompt(
-        book_title, author, chapter_title, context_text, prev_summaries or []
+        book_title, author, chapter_title, chapter_text, prev_summaries or []
     )
     messages = [
         {"role": "system", "content": _system_prompt(style)},
