@@ -1,5 +1,5 @@
 // 设置抽屉：解读风格/长度、音色选择与试听、限流、主题
-import { useState, useEffect } from "preact/hooks";
+import { useState, useEffect, useRef } from "preact/hooks";
 import {
   settings,
   voiceOptions,
@@ -26,9 +26,9 @@ export function SettingsPanel() {
   const [animOpen, setAnimOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [previewing, setPreviewing] = useState<string | null>(null);
-  const [previewAudio, setPreviewAudio] = useState<HTMLAudioElement | null>(
-    null
-  );
+  
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const activeVoiceRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -47,9 +47,28 @@ export function SettingsPanel() {
     } else {
       setAnimOpen(false);
       const timer = setTimeout(() => setRender(false), 200);
+
+      // Drawer 关闭时，停止并清理正在播放的音频
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+      setPreviewing(null);
+      activeVoiceRef.current = null;
+
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
+
+  // 组件销毁时的清理
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   if (!render || !s) return null;
 
@@ -66,25 +85,54 @@ export function SettingsPanel() {
   };
 
   const previewVoice = async (voice: string) => {
-    // 停止上一个
-    if (previewAudio) {
-      previewAudio.pause();
-      setPreviewAudio(null);
+    // 如果点击的是正在播放/加载的音色，则暂停并取消
+    if (activeVoiceRef.current === voice) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+      setPreviewing(null);
+      activeVoiceRef.current = null;
+      return;
     }
+
+    // 停止并清理前一个音频
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+
+    // 标记当前正在加载此音色
     setPreviewing(voice);
+    activeVoiceRef.current = voice;
+
     try {
       const blob = await api.previewVoice(voice);
+      
+      // 在异步请求结束后，检查在此期间是否已切换或取消
+      if (activeVoiceRef.current !== voice) {
+        return;
+      }
+
       const url = URL.createObjectURL(blob);
       const a = new Audio(url);
+      audioRef.current = a;
+      
       a.onended = () => {
-        setPreviewing(null);
+        if (activeVoiceRef.current === voice) {
+          setPreviewing(null);
+          activeVoiceRef.current = null;
+        }
         URL.revokeObjectURL(url);
       };
-      setPreviewAudio(a);
+
       a.play();
     } catch (e: any) {
-      showToast(e.message || "试听失败", "error");
-      setPreviewing(null);
+      if (activeVoiceRef.current === voice) {
+        showToast(e.message || "试听失败", "error");
+        setPreviewing(null);
+        activeVoiceRef.current = null;
+      }
     }
   };
 

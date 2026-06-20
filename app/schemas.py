@@ -91,17 +91,17 @@ class Settings(BaseModel):
 VOICE_OPTIONS: list[dict] = [
     {"id": "zh-CN-XiaoxiaoNeural", "name": "晓晓（女·温柔）"},
     {"id": "zh-CN-XiaoyiNeural", "name": "晓伊（女·活泼）"},
-    {"id": "zh-CN-XiaochenNeural", "name": "晓辰（女·稳重）"},
-    {"id": "zh-CN-XiaohanNeural", "name": "晓涵（女·知性）"},
-    {"id": "zh-CN-XiaomengNeural", "name": "晓梦（女·亲切）"},
-    {"id": "zh-CN-XiaomoNeural", "name": "晓墨（女·清冷）"},
-    {"id": "zh-CN-XiaoqiuNeural", "name": "晓秋（女·成熟）"},
-    {"id": "zh-CN-XiaoruiNeural", "name": "晓睿（女·干练）"},
     {"id": "zh-CN-YunxiNeural", "name": "云希（男·阳光）"},
     {"id": "zh-CN-YunyangNeural", "name": "云扬（男·专业）"},
     {"id": "zh-CN-YunjianNeural", "name": "云健（男·沉稳）"},
     {"id": "zh-CN-YunxiaNeural", "name": "云夏（男·少年）"},
-    {"id": "zh-CN-YunfengNeural", "name": "云枫（男·磁性）"},
+    {"id": "zh-CN-liaoning-XiaobeiNeural", "name": "小北（女·东北话）"},
+    {"id": "zh-CN-shaanxi-XiaoniNeural", "name": "小妮（女·陕西话）"},
+    {"id": "zh-TW-HsiaoChenNeural", "name": "晓臻（女·台湾腔）"},
+    {"id": "zh-TW-HsiaoYuNeural", "name": "晓雨（女·台湾腔）"},
+    {"id": "zh-TW-YunJheNeural", "name": "云哲（男·台湾腔）"},
+    {"id": "zh-HK-HiuMaanNeural", "name": "晓佳（女·粤语）"},
+    {"id": "zh-HK-WanLungNeural", "name": "云龙（男·粤语）"},
 ]
 
 

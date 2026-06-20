@@ -7,7 +7,7 @@ import uuid
 from pathlib import Path
 
 from .config import settings
-from .schemas import BookMeta, Chapter, Settings as AppSettings
+from .schemas import BookMeta, Chapter, Settings as AppSettings, VOICE_OPTIONS
 
 
 def ensure_dirs(book_id: str) -> None:
@@ -140,8 +140,11 @@ def apply_settings(s: AppSettings) -> None:
     settings.style = s.style
     settings.turns_min = s.turns_min
     settings.turns_max = s.turns_max
-    settings.voice_a = s.voice_a
-    settings.voice_b = s.voice_b
+    
+    valid_ids = {v["id"] for v in VOICE_OPTIONS}
+    settings.voice_a = s.voice_a if s.voice_a in valid_ids else "zh-CN-XiaoxiaoNeural"
+    settings.voice_b = s.voice_b if s.voice_b in valid_ids else "zh-CN-YunxiNeural"
+    
     settings.concurrency = s.concurrency
     settings.deepseek_rpm = s.deepseek_rpm
     settings.edge_concurrency = s.edge_concurrency
