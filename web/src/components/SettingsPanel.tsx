@@ -131,29 +131,9 @@ export function SettingsPanel() {
           {/* 对谈长度 */}
           <div class="drawer-section">
             <h4>对谈长度</h4>
-            <div class="field">
-              <label>
-                轮数：{s.turns_min} – {s.turns_max} 轮
-              </label>
-              <input
-                type="range"
-                min={3}
-                max={30}
-                value={s.turns_min}
-                onChange={(e) =>
-                  update({ turns_min: Number((e.target as HTMLInputElement).value) })
-                }
-              />
-              <input
-                type="range"
-                min={3}
-                max={30}
-                value={s.turns_max}
-                onChange={(e) =>
-                  update({ turns_max: Number((e.target as HTMLInputElement).value) })
-                }
-              />
-            </div>
+            <p class="muted" style={{ fontSize: 12, lineHeight: 1.5, marginTop: 4 }}>
+              现已由章节内容的复杂度与信息密度自动决定（一般在 10–38 句之间），以确保硬核知识能被层层剖析透彻，且无冗余废话。
+            </p>
           </div>
 
           {/* 音色 */}
