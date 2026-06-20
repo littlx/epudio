@@ -37,6 +37,7 @@ class Chapter(BaseModel):
     char_count: int = 0  # 原文字符数
     status: ChapterStatus = "pending"
     message: str = ""  # 进度/错误文案
+    error_detail: str = ""  # 失败时的完整堆栈/详情，供前端展开查看
     stage: Stage = "idle"  # 细粒度阶段
     stage_detail: str = ""  # 阶段补充文案，如"合成 3/12 句"
     progress: float = 0.0  # 0-1，当前阶段进度
@@ -114,6 +115,7 @@ class BookSummary(BaseModel):
     chapter_count: int
     done_count: int
     created_at: float
+    running: bool = False  # 该书是否有生成任务在跑（全书或单章重做）
 
 
 class GenerateRequest(BaseModel):

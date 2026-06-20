@@ -27,6 +27,7 @@ export interface Chapter {
   char_count: number;
   status: ChapterStatus;
   message: string;
+  error_detail: string;
   stage: Stage;
   stage_detail: string;
   progress: number;
@@ -51,6 +52,7 @@ export interface BookSummary {
   chapter_count: number;
   done_count: number;
   created_at: number;
+  running: boolean;
 }
 
 export interface Turn {

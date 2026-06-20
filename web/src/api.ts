@@ -26,12 +26,39 @@ export const api = {
   // 书籍
   listBooks: () => fetch(`${BASE}/books`).then(json<BookSummary[]>),
 
-  uploadBook: (file: File) => {
+  uploadBook: (
+    file: File,
+    onProgress?: (loaded: number, total: number) => void
+  ) => {
     const fd = new FormData();
     fd.append("file", file);
-    return fetch(`${BASE}/books`, { method: "POST", body: fd }).then(
-      json<BookMeta>
-    );
+    // 用 XMLHttpRequest 以获取上传进度（fetch 无法观测上传进度）
+    return new Promise<BookMeta>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `${BASE}/books`);
+      if (onProgress && xhr.upload) {
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) onProgress(e.loaded, e.total);
+        };
+      }
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            resolve(JSON.parse(xhr.responseText) as BookMeta);
+          } catch {
+            reject(new Error("解析返回失败"));
+          }
+        } else {
+          let detail = "上传失败";
+          try {
+            detail = JSON.parse(xhr.responseText).detail || detail;
+          } catch {}
+          reject(new Error(detail));
+        }
+      };
+      xhr.onerror = () => reject(new Error("网络错误"));
+      xhr.send(fd);
+    });
   },
 
   getBook: (id: string) =>
@@ -64,6 +91,13 @@ export const api = {
       if (!res.ok) throw new Error("请求失败");
       return res.json() as Promise<{ chapter_title: string; script: Script }>;
     }),
+
+  updateScript: (id: string, n: number, script: Script) =>
+    fetch(`${BASE}/books/${id}/chapters/${n}/script`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(script),
+    }).then(json<{ message: string }>),
 
   audioUrl: (id: string, n: number) =>
     `${BASE}/books/${id}/chapters/${n}/audio`,

@@ -3,8 +3,12 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import tempfile
 from contextlib import asynccontextmanager
+from pathlib import Path
+from urllib.parse import quote
 
+import edge_tts
 from fastapi import (
     FastAPI,
     File,
@@ -14,6 +18,7 @@ from fastapi import (
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
 from . import epub_parser, export, jobs, ratelimit, store, tts
@@ -21,9 +26,12 @@ from . import sse as sse_mod
 from .config import settings
 from .schemas import (
     BookSummary,
+    Chapter,
     GenerateRequest,
     Message,
+    Script,
     Settings as AppSettings,
+    Turn,
     VOICE_OPTIONS,
 )
 
@@ -67,7 +75,7 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 # ---- 工具 ----
 
-def _summary(meta) -> BookSummary:
+def _summary(meta, running: bool = False) -> BookSummary:
     done = sum(1 for c in meta.chapters if c.status == "done")
     return BookSummary(
         book_id=meta.book_id,
@@ -76,6 +84,7 @@ def _summary(meta) -> BookSummary:
         chapter_count=len(meta.chapters),
         done_count=done,
         created_at=meta.created_at,
+        running=running,
     )
 
 
@@ -101,11 +110,29 @@ async def index():
     )
 
 
+# ---- PWA 资源 ----
+# manifest 与 icons 由 /static 的 StaticFiles 直接服务（引用 /static/... 前缀）。
+# Service Worker 必须在根路径注册才能控制 / scope，故单独根路由托管。
+
+@app.get("/sw.js")
+async def service_worker():
+    p = STATIC_DIR / "sw.js"
+    if not p.exists():
+        raise HTTPException(status_code=404, detail="sw.js 未构建")
+    return FileResponse(
+        p, media_type="application/javascript",
+        headers={"Cache-Control": "no-cache"},
+    )
+
+
 # ---- 书籍 API ----
 
 @app.get("/api/books")
 async def api_list_books():
-    return [_summary(m).model_dump() for m in store.list_books()]
+    return [
+        _summary(m, running=jobs.is_any_running(m.book_id)).model_dump()
+        for m in store.list_books()
+    ]
 
 
 @app.post("/api/books")
@@ -122,8 +149,6 @@ async def api_upload_book(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"EPUB 解析失败：{e}")
 
-    from .schemas import Chapter
-
     chapters = [
         Chapter(index=i, title=c.title, char_count=c.char_count)
         for i, c in enumerate(parsed.chapters)
@@ -139,7 +164,7 @@ async def api_upload_book(file: UploadFile = File(...)):
 async def api_get_book(book_id: str):
     meta = _require_book(book_id)
     data = meta.model_dump(mode="json")
-    data["running"] = jobs.is_running(book_id)
+    data["running"] = jobs.is_any_running(book_id)
     return data
 
 
@@ -147,9 +172,6 @@ async def api_get_book(book_id: str):
 async def api_delete_book(book_id: str):
     store.delete_book(book_id)
     return Message(message="已删除").model_dump()
-
-
-from pydantic import BaseModel
 
 
 class UpdateBookRequest(BaseModel):
@@ -276,6 +298,29 @@ async def api_chapter_script(book_id: str, n: int):
     }
 
 
+class EditScriptRequest(BaseModel):
+    title: str
+    summary: str = ""
+    turns: list[Turn]
+
+
+@app.put("/api/books/{book_id}/chapters/{n}/script")
+async def api_update_chapter_script(book_id: str, n: int, req: EditScriptRequest):
+    """编辑解读脚本后重新合成音频（跳过解读）。"""
+    meta = _require_book(book_id)
+    if n not in {c.index for c in meta.chapters}:
+        raise HTTPException(status_code=400, detail="章节不存在")
+    if jobs.is_running(book_id):
+        raise HTTPException(status_code=409, detail="该书正在生成中，请等待其完成")
+    if not req.turns:
+        raise HTTPException(status_code=400, detail="脚本不能为空")
+    script = Script(title=req.title, summary=req.summary, turns=req.turns)
+    ok = await jobs.resynthesize_chapter(book_id, n, script)
+    if not ok:
+        raise HTTPException(status_code=409, detail="该章正在处理中")
+    return Message(message="已开始重新合成").model_dump()
+
+
 @app.post("/api/books/{book_id}/chapters/{n}/regenerate")
 async def api_regenerate_chapter(book_id: str, n: int):
     meta = _require_book(book_id)
@@ -298,8 +343,6 @@ async def api_export_book(book_id: str):
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     # 中文文件名用 RFC 5987 filename* 编码，避免 latin-1 报错
-    from urllib.parse import quote
-
     quoted = quote(filename)
     return Response(
         content=data,
@@ -348,14 +391,11 @@ async def api_voice_preview(payload: dict):
     valid_ids = {v["id"] for v in VOICE_OPTIONS}
     if voice not in valid_ids:
         raise HTTPException(status_code=400, detail="未知音色")
-    import tempfile
-    from pathlib import Path
-
     text = "你好，这是音色试听样本。今天我们一起来读一本书。"
     with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as tf:
         tmp = Path(tf.name)
     try:
-        communicate = __import__("edge_tts").Communicate(text, voice)
+        communicate = edge_tts.Communicate(text, voice)
         await communicate.save(str(tmp))
         audio = tmp.read_bytes()
     finally:

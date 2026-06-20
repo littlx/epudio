@@ -2,6 +2,7 @@
 import { signal, computed } from "@preact/signals";
 import type { BookMeta, BookSummary, Settings, SettingsResponse } from "./types";
 import { api, subscribeBook } from "./api";
+import { clearPosition, pruneBook } from "./playback";
 
 // ---- 视图路由 ----
 export type View = { name: "shelf" } | { name: "book"; bookId: string };
@@ -214,6 +215,38 @@ export async function regenerateChapter(index: number) {
   }
 }
 
+export async function regenerateSelected() {
+  const meta = currentBook.value;
+  if (!meta || selectedIndexes.value.size === 0) return;
+  // 仅对 done / error 章节重做有实际意义
+  const targets = Array.from(selectedIndexes.value)
+    .filter((i) => {
+      const ch = meta.chapters.find((c) => c.index === i);
+      return ch && (ch.status === "done" || ch.status === "error");
+    })
+    .sort((a, b) => a - b);
+  if (targets.length === 0) {
+    showToast("选中章节无可重做项", "info");
+    return;
+  }
+  let ok = 0;
+  let fail = 0;
+  for (const i of targets) {
+    try {
+      await api.regenerateChapter(meta.book_id, i);
+      ok++;
+    } catch {
+      fail++;
+    }
+  }
+  if (fail === 0) {
+    showToast(`已开始重做 ${ok} 章`, "success");
+  } else {
+    showToast(`重做 ${ok} 章，失败 ${fail} 章`, "info");
+  }
+  selectedIndexes.value = new Set();
+}
+
 export async function deleteBook(bookId: string) {
   try {
     await api.deleteBook(bookId);
@@ -265,6 +298,8 @@ async function playChapter(bookId: string, index: number) {
       .filter((c) => c.status === "done")
       .map((c) => c.index)
       .sort((a, b) => a - b);
+    // 清理该书已不在 done 列表的章节旧进度
+    pruneBook(bookId, meta);
   }
   player.value = { bookId, index, paused: false };
 }
@@ -281,6 +316,8 @@ export function playingTitle(): string {
 export function onTrackEnded() {
   const cur = player.value;
   if (!cur.bookId || cur.index == null) return;
+  // 本章已听完，清除其进度
+  clearPosition(cur.bookId, cur.index);
   const pos = playingDoneList.indexOf(cur.index);
   if (pos !== -1 && pos + 1 < playingDoneList.length) {
     playChapter(cur.bookId, playingDoneList[pos + 1]);

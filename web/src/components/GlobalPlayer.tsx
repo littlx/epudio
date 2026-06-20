@@ -8,6 +8,7 @@ import {
   playNext,
   audioUrlFor,
 } from "../store";
+import { loadPosition, savePosition } from "../playback";
 import { IconPrev, IconNext, IconPlay, IconPause } from "./icons";
 import { formatDuration } from "../utils";
 
@@ -57,13 +58,25 @@ export function GlobalPlayer() {
 
   const handleTimeUpdate = () => {
     if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime);
+      const t = audioRef.current.currentTime;
+      setCurrentTime(t);
+      if (cur.bookId && cur.index != null) {
+        savePosition(cur.bookId, cur.index, t);
+      }
     }
   };
 
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
       setDuration(audioRef.current.duration);
+      // 恢复上次播放位置
+      if (cur.bookId && cur.index != null) {
+        const pos = loadPosition(cur.bookId, cur.index);
+        if (pos != null && pos < audioRef.current.duration - 2) {
+          audioRef.current.currentTime = pos;
+          setCurrentTime(pos);
+        }
+      }
     }
   };
 
@@ -72,6 +85,9 @@ export function GlobalPlayer() {
     if (audioRef.current) {
       audioRef.current.currentTime = val;
       setCurrentTime(val);
+      if (cur.bookId && cur.index != null) {
+        savePosition(cur.bookId, cur.index, val);
+      }
     }
   };
 

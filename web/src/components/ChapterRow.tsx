@@ -1,4 +1,5 @@
 // 单章行：复选框 + 标题 + 分阶段进度 + 状态徽章 + 播放/文稿/重做
+import { useState } from "preact/hooks";
 import {
   selectedIndexes,
   toggleSelect,
@@ -9,7 +10,7 @@ import {
 } from "../store";
 import type { Chapter, ChapterStatus } from "../types";
 import { formatDuration, formatChars } from "../utils";
-import { IconPlay, IconPause, IconDoc, IconRefresh } from "./icons";
+import { IconPlay, IconPause, IconDoc, IconRefresh, IconChevron } from "./icons";
 
 const STATUS_LABEL: Record<ChapterStatus, string> = {
   pending: "待生成",
@@ -43,6 +44,7 @@ export function ChapterRow({
   const inProgress = ["interpreting", "synthesizing", "retrying"].includes(
     chapter.status
   );
+  const [expanded, setExpanded] = useState(false);
 
   const metaParts = [formatChars(chapter.char_count)];
   if (chapter.audio_seconds != null)
@@ -50,8 +52,10 @@ export function ChapterRow({
   if (chapter.status === "error" && chapter.message)
     metaParts.push(chapter.message);
 
+  const hasErrorDetail = chapter.status === "error" && !!chapter.error_detail;
+
   return (
-    <div class="chapter-row">
+    <div class={"chapter-row" + (chapter.status === "error" ? " has-error" : "")}>
       <div class="checkbox">
         <input
           type="checkbox"
@@ -78,7 +82,28 @@ export function ChapterRow({
                 chapter.message
               : metaParts.join(" · ")}
           </span>
+          {hasErrorDetail && (
+            <button
+              class="error-toggle"
+              title={expanded ? "收起详情" : "查看详情"}
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpanded((v) => !v);
+              }}
+            >
+              <IconChevron
+                size={14}
+                style={{
+                  transform: expanded ? "rotate(180deg)" : "none",
+                  transition: "transform 0.2s",
+                }}
+              />
+            </button>
+          )}
         </div>
+        {hasErrorDetail && expanded && (
+          <pre class="error-detail">{chapter.error_detail}</pre>
+        )}
       </div>
       <div class="ch-actions">
         <span class={`status-badge status-${chapter.status}`}>

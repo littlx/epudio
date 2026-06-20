@@ -167,6 +167,7 @@ def recover_on_startup() -> int:
                 ch.stage_detail = ""
                 ch.progress = 0.0
                 ch.message = "服务重启，待恢复"
+                ch.error_detail = ""
                 changed = True
                 affected += 1
         if changed or meta.running:
