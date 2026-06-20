@@ -1465,7 +1465,7 @@ a:hover {
    ============================================================ */
 @media (max-width: 720px) {
   .app-main {
-    padding: var(--sp-4) var(--sp-3) 150px;
+    padding: var(--sp-4) var(--sp-3) 95px;
   }
   .topbar {
     padding: 0 var(--sp-4);
@@ -1473,28 +1473,89 @@ a:hover {
   .brand h1 {
     font-size: var(--fs-base);
   }
+  
+  /* 移动端极简单行播放器 */
   .player-bar {
     width: calc(100% - 2 * var(--sp-3));
     bottom: var(--sp-3);
     left: 50%;
     transform: translateX(-50%);
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    padding: var(--sp-2) var(--sp-4);
+    flex-wrap: nowrap;
+    height: 64px;
+    padding: 0 var(--sp-4);
+    gap: var(--sp-3);
+    box-shadow: var(--shadow-lg);
+    overflow: visible;
   }
   .player-bar .player-info {
     width: auto;
     flex: 1;
-    min-width: 150px;
+    min-width: 0;
   }
-  .player-bar .player-slider-container {
-    flex-basis: 100%;
-    order: 1;
-    margin-top: 6px;
+  .player-bar .player-now {
+    display: none; /* 移动端隐藏状态标签以节省垂直行高 */
+  }
+  .player-bar .player-title {
+    font-size: var(--fs-xs);
+    margin-top: 0;
+  }
+  .player-bar .player-controls {
+    gap: 0;
+    flex-shrink: 0;
+  }
+  .player-bar .player-controls .icon-btn {
+    display: none; /* 隐藏手机端上一章/下一章，通过列表点击或自动续播完成 */
+  }
+  .player-bar .play-trigger {
+    width: 38px;
+    height: 38px;
   }
   .player-bar .player-time-display {
-    margin-left: auto;
+    display: none; /* 隐藏时间，释放水平空间 */
   }
+  
+  /* 极简顶置进度条：将原本的 range input 转化为顶端 3px 指示轨 */
+  .player-bar .player-slider-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 3px;
+    padding: 0;
+    margin: 0;
+    flex: none;
+    overflow: visible;
+  }
+  .player-bar .player-slider {
+    position: absolute;
+    top: -3px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    border-radius: 0;
+    background: var(--surface-3);
+    outline: none;
+    -webkit-appearance: none;
+    margin: 0;
+    padding: 0;
+  }
+  .player-bar .player-slider::-webkit-slider-thumb {
+    width: 0;
+    height: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    -webkit-appearance: none;
+  }
+  .player-bar .player-speed-control {
+    margin-left: 0;
+  }
+  .player-bar .player-speed-control select {
+    padding: 2px 6px;
+    font-size: 11px;
+  }
+
   .book-detail-hero {
     flex-direction: column;
     align-items: center;
@@ -1511,12 +1572,22 @@ a:hover {
   .book-hero-info .progress-section {
     width: 100%;
   }
+  
+  /* 移动端 2x2 网格，使按钮在窄屏下也极具舒展度，文字绝不直排折行 */
   .book-actions {
     width: 100%;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-2);
+    margin-top: var(--sp-2);
   }
   .book-actions .btn {
-    flex: 1;
+    width: 100%;
+    padding: 10px 8px;
+    font-size: var(--fs-xs);
+    gap: 6px;
+    white-space: nowrap;
+    justify-content: center;
   }
 }
 
