@@ -1384,8 +1384,14 @@ a:hover {
     text-align: center;
     width: 100%;
     gap: var(--sp-4);
-    max-height: 100%;
-    overflow-y: auto;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    max-height: none;
+    overflow: visible;
   }
   
   .book-hero-cover {
