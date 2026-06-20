@@ -1355,11 +1355,24 @@ a:hover {
 
 /* 大屏幕宽度足够时，详情页采用左右分栏两列布局 */
 @media (min-width: 900px) {
+  /* 当主视图在书籍详情下时，整个 app 应当刚好填满一屏 */
+  body:has(.book-detail-container) {
+    overflow: hidden;
+  }
+  
+  body:has(.book-detail-container) .app-main {
+    height: calc(100vh - var(--topbar-h));
+    padding: var(--sp-5) var(--sp-5) var(--sp-5);
+    overflow: hidden;
+  }
+
   .book-detail-container {
     display: grid;
     grid-template-columns: 320px 1fr;
     gap: var(--sp-6);
     align-items: start;
+    height: 100%;
+    overflow: hidden;
   }
   
   .book-detail-hero {
@@ -1370,6 +1383,8 @@ a:hover {
     text-align: center;
     width: 100%;
     gap: var(--sp-4);
+    max-height: 100%;
+    overflow-y: auto;
   }
   
   .book-hero-cover {
@@ -1412,6 +1427,16 @@ a:hover {
     display: flex;
     flex-direction: column;
     gap: var(--sp-4);
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .chapter-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: var(--sp-2);
+    /* 底部增加填充边距，确保滚动到最下面时，内容不被悬浮底栏遮挡 */
+    padding-bottom: 90px;
   }
 }
 
