@@ -170,15 +170,19 @@ function BookCard({ book }: { book: BookSummary }) {
         )}
       </div>
       <div class="body">
-        <div class="meta-row">
-          <span>{book.chapter_count}章 · {book.done_count}/{book.chapter_count}已完成</span>
-          {p > 0 && (
-            <div class="progress-ring" style={{ "--pct": p } as any}>
-              <span class="pct-txt">{p}%</span>
-            </div>
-          )}
+        <div class="meta-title-row">
+          <span class="book-meta-chapters">{book.chapter_count} 章节</span>
+          <span class="book-meta-done">{book.done_count}已完成</span>
         </div>
-        <div class="meta-date">{formatTime(book.created_at)} 上传</div>
+        {book.chapter_count > 0 && (
+          <div class="book-progress-bar">
+            <div class="fill" style={{ width: `${p}%` }} />
+          </div>
+        )}
+        <div class="meta-footer">
+          <span class="pct-txt">{p}% 已就绪</span>
+          <span class="meta-date">{formatTime(book.created_at)}</span>
+        </div>
       </div>
     </div>
   );
