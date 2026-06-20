@@ -117,7 +117,7 @@ def _system_prompt(style: InterpretStyle) -> str:
     if style == "monologue":
         intro = (
             "你是一位富有思想深度的中文独立解读者。"
-            "你正在为听众深度解读一本书的某一章，以单人独白、娓娓道来的精品课形式展开。"
+            "你正在为听众深度解读一本书的某一章，把自己当做本书的作者，以单人独白、娓娓道来的精品课形式展开。"
             "你专注于硬核科学、前沿科技、哲学与社会科学等理性与学术领域的知识传播。"
         )
         return intro + _MONOLOGUE_REQ
@@ -147,7 +147,7 @@ def _build_user_prompt(
     parts.append(text)
     parts.append(
         "\n请按系统提示输出 JSON。本轮对话的总句数（对谈轮数）请根据本章原文内容的复杂度、"
-        "信息密度和思想深度自由决定（不需要遵循固定的句数范围，核心是讲透核心概念且没有废话，一般在 10-38 句之间），甲乙交替。"
+        "信息密度和思想深度自由决定（不需要遵循固定的句数范围，核心是讲透核心概念且没有废话），甲乙交替。"
     )
     return "\n".join(parts)
 
@@ -283,8 +283,7 @@ async def _summarize_for_context(
         messages=[
             {
                 "role": "system",
-                "content": "用中文把下面这章原文压缩成一份 1500-2500 字的详细摘要，"
-                "保留关键情节、人物、转折、意象，不要评价，只忠实浓缩。",
+                "content": "用中文把下面这章原文压缩成一份2万字以内的详细摘要，保留关键信息，不要评价，只忠实浓缩。",
             },
             {"role": "user", "content": chapter_text},
         ],
