@@ -951,21 +951,25 @@ a:hover {
 
 .title-edit-form {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: var(--sp-2);
   width: 100%;
-  max-width: 500px;
 }
 .title-edit-input {
-  flex: 1;
+  width: 100%;
   font-size: var(--fs-md);
   font-weight: 700;
-  padding: 6px 12px;
+  padding: 8px 12px;
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   color: var(--text);
   transition: all var(--dur) var(--ease);
+}
+.title-edit-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
 }
 .title-edit-input:focus {
   border-color: var(--accent);
@@ -1365,7 +1369,7 @@ a:hover {
   
   body:has(.book-detail-container) .app-main {
     height: auto;
-    padding: var(--sp-5) var(--sp-5) 130px;
+    padding: var(--sp-5) var(--sp-5) 100px;
     overflow: visible;
   }
 

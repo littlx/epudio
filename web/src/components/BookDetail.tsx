@@ -95,18 +95,20 @@ export function BookDetail({ bookId }: { bookId: string }) {
                 onKeyDown={handleKeyDown}
                 autoFocus
               />
-              <button class="btn sm" onClick={handleSave}>
-                保存
-              </button>
-              <button
-                class="btn sm ghost"
-                onClick={() => {
-                  setIsEditing(false);
-                  setEditTitle(meta.title);
-                }}
-              >
-                取消
-              </button>
+              <div class="title-edit-buttons">
+                <button class="btn sm" onClick={handleSave}>
+                  保存
+                </button>
+                <button
+                  class="btn sm ghost"
+                  onClick={() => {
+                    setIsEditing(false);
+                    setEditTitle(meta.title);
+                  }}
+                >
+                  取消
+                </button>
+              </div>
             </div>
           ) : (
             <div class="book-title-meta-row">
