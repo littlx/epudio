@@ -166,7 +166,8 @@ def recover_on_startup() -> int:
                 ch.message = "服务重启，待恢复"
                 changed = True
                 affected += 1
-        if changed:
+        if changed or meta.running:
+            meta.running = False
             save_meta(meta)
     return affected
 

@@ -258,6 +258,8 @@ async def api_regenerate_chapter(book_id: str, n: int):
     meta = _require_book(book_id)
     if n not in {c.index for c in meta.chapters}:
         raise HTTPException(status_code=400, detail="章节不存在")
+    if jobs.is_running(book_id):
+        raise HTTPException(status_code=409, detail="该书正在生成中，请等待其完成")
     ok = await jobs.regenerate_chapter(book_id, n)
     if not ok:
         raise HTTPException(status_code=409, detail="该章正在处理中")
@@ -327,7 +329,8 @@ async def api_voice_preview(payload: dict):
     from pathlib import Path
 
     text = "你好，这是音色试听样本。今天我们一起来读一本书。"
-    tmp = Path(tempfile.mktemp(suffix=".mp3"))
+    with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as tf:
+        tmp = Path(tf.name)
     try:
         communicate = __import__("edge_tts").Communicate(text, voice)
         await communicate.save(str(tmp))

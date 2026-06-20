@@ -11,7 +11,6 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from collections import defaultdict
 from typing import Any
 
 log = logging.getLogger("epubmp3.sse")
@@ -20,7 +19,8 @@ log = logging.getLogger("epubmp3.sse")
 class EventBus:
     """单本书的事件总线：维护订阅者队列，publish 时向所有订阅者推送。"""
 
-    def __init__(self) -> None:
+    def __init__(self, book_id: str) -> None:
+        self.book_id = book_id
         self._subscribers: set[asyncio.Queue] = set()
         self._lock = asyncio.Lock()
 
@@ -33,6 +33,8 @@ class EventBus:
     async def unsubscribe(self, q: asyncio.Queue) -> None:
         async with self._lock:
             self._subscribers.discard(q)
+            if not self._subscribers:
+                _buses.pop(self.book_id, None)
 
     async def publish(self, data: dict[str, Any]) -> None:
         """向所有订阅者推送一个事件。队列满则丢弃（避免阻塞 worker）。"""
@@ -52,30 +54,38 @@ class EventBus:
 
 
 # 全局：book_id → EventBus
-_buses: dict[str, EventBus] = defaultdict(EventBus)
+_buses: dict[str, EventBus] = {}
 
 
 def get_bus(book_id: str) -> EventBus:
+    if book_id not in _buses:
+        _buses[book_id] = EventBus(book_id)
     return _buses[book_id]
 
 
 async def publish_chapter(book_id: str, chapter: dict[str, Any]) -> None:
-    await get_bus(book_id).publish({"type": "chapter", "chapter": chapter})
+    bus = _buses.get(book_id)
+    if bus:
+        await bus.publish({"type": "chapter", "chapter": chapter})
 
 
 async def publish_book_state(
     book_id: str, running: bool, done: int, total: int, errored: int
 ) -> None:
-    await get_bus(book_id).publish(
-        {
-            "type": "book",
-            "running": running,
-            "done": done,
-            "total": total,
-            "errored": errored,
-        }
-    )
+    bus = _buses.get(book_id)
+    if bus:
+        await bus.publish(
+            {
+                "type": "book",
+                "running": running,
+                "done": done,
+                "total": total,
+                "errored": errored,
+            }
+        )
 
 
 async def publish_done(book_id: str) -> None:
-    await get_bus(book_id).publish({"type": "done"})
+    bus = _buses.get(book_id)
+    if bus:
+        await bus.publish({"type": "done"})

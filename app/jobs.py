@@ -236,6 +236,8 @@ def start_generation(book_id: str, indexes: list[int]) -> bool:
 
 async def regenerate_chapter(book_id: str, index: int) -> bool:
     """单章重做。"""
+    if is_running(book_id):
+        return False
     meta = store.load_meta(book_id)
     if meta is None:
         return False
