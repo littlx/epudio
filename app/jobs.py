@@ -49,12 +49,31 @@ async def _update_chapter(
     meta: BookMeta, index: int, publish: bool = True, **kwargs
 ) -> None:
     """更新某章字段，落盘，并可选推送 SSE。"""
-    for ch in meta.chapters:
-        if ch.index == index:
-            for k, v in kwargs.items():
-                setattr(ch, k, v)
-            break
-    store.save_meta(meta)
+    # 重新从磁盘读取最新元数据，防止后台写入时覆盖用户并发修改的书名/作者等属性
+    fresh = store.load_meta(meta.book_id)
+    if fresh is not None:
+        meta.title = fresh.title
+        meta.author = fresh.author
+        meta.cover = fresh.cover
+        for ch in fresh.chapters:
+            if ch.index == index:
+                for k, v in kwargs.items():
+                    setattr(ch, k, v)
+                break
+        for ch in meta.chapters:
+            if ch.index == index:
+                for k, v in kwargs.items():
+                    setattr(ch, k, v)
+                break
+        store.save_meta(fresh)
+    else:
+        for ch in meta.chapters:
+            if ch.index == index:
+                for k, v in kwargs.items():
+                    setattr(ch, k, v)
+                break
+        store.save_meta(meta)
+
     if publish:
         ch_obj = next((c for c in meta.chapters if c.index == index), None)
         if ch_obj:
@@ -253,8 +272,20 @@ async def _worker(meta: BookMeta, indexes: list[int]) -> None:
     try:
         await asyncio.gather(*[run_one(i) for i in indexes])
     finally:
-        meta.running = False
-        store.save_meta(meta)
+        fresh = store.load_meta(meta.book_id)
+        if fresh is not None:
+            fresh.running = False
+            fresh.chapters = meta.chapters
+            store.save_meta(fresh)
+            # 同步回内存对象
+            meta.title = fresh.title
+            meta.author = fresh.author
+            meta.cover = fresh.cover
+            meta.running = False
+        else:
+            meta.running = False
+            store.save_meta(meta)
+
         done = sum(1 for c in meta.chapters if c.status == "done")
         err = sum(1 for c in meta.chapters if c.status == "error")
         await sse.publish_book_state(
