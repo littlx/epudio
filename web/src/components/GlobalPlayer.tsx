@@ -1,5 +1,5 @@
 // 全局常驻播放器：返回书架或切换书籍时也不中断
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import {
   player,
   playingTitle,
@@ -8,11 +8,15 @@ import {
   playNext,
   audioUrlFor,
 } from "../store";
-import { IconPrev, IconNext } from "./icons";
+import { IconPrev, IconNext, IconPlay, IconPause } from "./icons";
+import { formatDuration } from "../utils";
 
 export function GlobalPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const cur = player.value;
+
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   // src 变化时加载并播放
   useEffect(() => {
@@ -41,6 +45,30 @@ export function GlobalPlayer() {
     }
   }, [cur.paused]);
 
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
+    }
+  };
+
+  const handleSeek = (e: Event) => {
+    const val = Number((e.target as HTMLInputElement).value);
+    if (audioRef.current) {
+      audioRef.current.currentTime = val;
+      setCurrentTime(val);
+    }
+  };
+
+  const handleTogglePlay = () => {
+    player.value = { ...cur, paused: !cur.paused };
+  };
+
   if (!cur.bookId || cur.index == null) return null;
 
   const title = playingTitle();
@@ -55,26 +83,56 @@ export function GlobalPlayer() {
           {title}
         </div>
       </div>
-      <button
-        class="icon-btn"
-        title="上一章"
-        onClick={playPrev}
-      >
-        <IconPrev size={18} />
-      </button>
+
+      <div class="player-controls">
+        <button
+          class="icon-btn"
+          title="上一章"
+          aria-label="上一章"
+          onClick={playPrev}
+        >
+          <IconPrev size={18} />
+        </button>
+        <button
+          class="play-trigger"
+          title={cur.paused ? "播放" : "暂停"}
+          aria-label={cur.paused ? "播放" : "暂停"}
+          onClick={handleTogglePlay}
+        >
+          {cur.paused ? <IconPlay size={16} /> : <IconPause size={16} />}
+        </button>
+        <button
+          class="icon-btn"
+          title="下一章"
+          aria-label="下一章"
+          onClick={playNext}
+        >
+          <IconNext size={18} />
+        </button>
+      </div>
+
+      <div class="player-slider-container">
+        <input
+          type="range"
+          class="player-slider"
+          min={0}
+          max={duration || 100}
+          value={currentTime}
+          onInput={handleSeek}
+          aria-label="播放进度"
+        />
+      </div>
+
+      <div class="player-time-display">
+        {formatDuration(currentTime)} / {formatDuration(duration)}
+      </div>
+
       <audio
         ref={audioRef}
-        controls
-        preload="none"
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
         onEnded={onTrackEnded}
       />
-      <button
-        class="icon-btn"
-        title="下一章"
-        onClick={playNext}
-      >
-        <IconNext size={18} />
-      </button>
     </div>
   );
 }

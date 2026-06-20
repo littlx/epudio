@@ -7,36 +7,53 @@ import { IconClose } from "./icons";
 
 export function ScriptModal() {
   const modal = scriptModal.value;
+  const [render, setRender] = useState(false);
+  const [animOpen, setAnimOpen] = useState(false);
+
+  // 缓存上一次的 modal 信息，在关闭动画进行中依然可以用来渲染内容而不会突变为空
+  const [lastModal, setLastModal] = useState<{ bookId: string; index: number } | null>(null);
+
+  useEffect(() => {
+    if (modal) {
+      setLastModal(modal);
+      setRender(true);
+      const timer = setTimeout(() => setAnimOpen(true), 10);
+      return () => clearTimeout(timer);
+    } else {
+      setAnimOpen(false);
+      const timer = setTimeout(() => setRender(false), 200);
+      return () => clearTimeout(timer);
+    }
+  }, [modal]);
+
+  const activeModal = modal || lastModal;
   const [script, setScript] = useState<Script | null>(null);
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!modal) {
-      setScript(null);
-      return;
-    }
+    if (!activeModal) return;
     setLoading(true);
     api
-      .getScript(modal.bookId, modal.index)
+      .getScript(activeModal.bookId, activeModal.index)
       .then((res) => {
         setScript(res.script);
         setTitle(res.chapter_title);
       })
       .catch(() => setScript(null))
       .finally(() => setLoading(false));
-  }, [modal?.bookId, modal?.index]);
+  }, [activeModal?.bookId, activeModal?.index]);
 
-  if (!modal) return null;
+  if (!render || !activeModal) return null;
 
   return (
     <div
-      class="modal-backdrop"
+      class={`modal-backdrop ${animOpen ? "open" : ""}`}
       onClick={(e) => {
         if (e.target === e.currentTarget) scriptModal.value = null;
       }}
     >
-      <div class="modal">
+      <div class={`modal ${animOpen ? "open" : ""}`}>
         <div class="modal-head">
           <h3>{title || "解读文稿"}</h3>
           <button class="icon-btn" onClick={() => (scriptModal.value = null)}>

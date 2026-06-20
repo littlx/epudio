@@ -1,5 +1,5 @@
 // 设置抽屉：解读风格/长度、音色选择与试听、限流、主题
-import { useState } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 import {
   settings,
   voiceOptions,
@@ -21,13 +21,28 @@ const STYLE_OPTIONS: { value: InterpretStyle; label: string; desc: string }[] = 
 
 export function SettingsPanel() {
   const s = settings.value;
+  const isOpen = settingsOpen.value;
+  const [render, setRender] = useState(false);
+  const [animOpen, setAnimOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [previewing, setPreviewing] = useState<string | null>(null);
   const [previewAudio, setPreviewAudio] = useState<HTMLAudioElement | null>(
     null
   );
 
-  if (!s) return null;
+  useEffect(() => {
+    if (isOpen) {
+      setRender(true);
+      const timer = setTimeout(() => setAnimOpen(true), 10);
+      return () => clearTimeout(timer);
+    } else {
+      setAnimOpen(false);
+      const timer = setTimeout(() => setRender(false), 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
+  if (!render || !s) return null;
 
   const update = async (patch: Partial<typeof s>) => {
     setSaving(true);
@@ -67,10 +82,10 @@ export function SettingsPanel() {
   return (
     <>
       <div
-        class="drawer-backdrop"
+        class={`drawer-backdrop ${animOpen ? "open" : ""}`}
         onClick={() => (settingsOpen.value = false)}
       />
-      <div class="drawer">
+      <div class={`drawer ${animOpen ? "open" : ""}`}>
         <div class="drawer-head">
           <h3>设置</h3>
           <button

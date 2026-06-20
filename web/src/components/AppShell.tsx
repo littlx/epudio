@@ -34,13 +34,19 @@ export function AppShell() {
         </div>
         <div class="topbar-actions">
           {v.name === "book" && (
-            <button class="icon-btn" title="返回书架" onClick={goShelf}>
+            <button
+              class="icon-btn"
+              title="返回书架"
+              aria-label="返回书架"
+              onClick={goShelf}
+            >
               <IconBack size={18} />
             </button>
           )}
           <button
             class="icon-btn"
             title={themeChoice.value === "dark" ? "切换浅色" : "切换深色"}
+            aria-label={themeChoice.value === "dark" ? "切换浅色主题" : "切换深色主题"}
             onClick={() =>
               setTheme(themeChoice.value === "dark" ? "light" : "dark")
             }
@@ -54,6 +60,7 @@ export function AppShell() {
           <button
             class="icon-btn"
             title="设置"
+            aria-label="设置"
             onClick={() => (settingsOpen.value = true)}
           >
             <IconSettings size={18} />
@@ -74,7 +81,7 @@ export function AppShell() {
         {v.name === "shelf" ? <BookShelf /> : <BookDetail bookId={v.bookId} />}
       </main>
 
-      {settingsOpen.value && <SettingsPanel />}
+      <SettingsPanel />
       <ScriptModal />
       <Toast />
     </div>
