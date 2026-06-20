@@ -29,7 +29,7 @@ export function AppShell() {
     <div class="app-root">
       <header class="topbar">
         <div class="brand" onClick={goShelf}>
-          <span class="logo-mark">🎙️</span>
+          <span class="logo-dot" />
           <h1>EPUB 有声解读</h1>
         </div>
         <div class="topbar-actions">

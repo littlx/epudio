@@ -4,7 +4,7 @@ import { books, shelfLoading, goBook, loadBooks, showToast } from "../store";
 import { api } from "../api";
 import type { BookSummary } from "../types";
 import { formatTime, pct, getBookGradient } from "../utils";
-import { IconUpload } from "./icons";
+import { IconUpload, IconBook } from "./icons";
 
 export function BookShelf() {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -73,7 +73,7 @@ export function BookShelf() {
         </div>
       ) : books.value.length === 0 ? (
         <div class="empty-state">
-          <div class="emoji">📚</div>
+          <IconBook size={48} class="icon" />
           <p>书架空空如也，上传一本开始吧</p>
         </div>
       ) : (

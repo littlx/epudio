@@ -10,7 +10,7 @@ import {
 import { api } from "../api";
 import { themeChoice, setTheme } from "../theme";
 import type { InterpretStyle, Theme } from "../types";
-import { IconClose, IconPlay } from "./icons";
+import { IconClose, IconPlay, IconPause } from "./icons";
 
 const STYLE_OPTIONS: { value: InterpretStyle; label: string; desc: string }[] = [
   { value: "dialogue", label: "对谈式", desc: "两位主持人聊天，互相呼应追问" },
@@ -168,7 +168,7 @@ export function SettingsPanel() {
                       previewVoice(v.id);
                     }}
                   >
-                    {previewing === v.id ? "⏸" : <IconPlay size={12} />}
+                    {previewing === v.id ? <IconPause size={12} /> : <IconPlay size={12} />}
                   </button>
                 </div>
               ))}
@@ -191,7 +191,7 @@ export function SettingsPanel() {
                       previewVoice(v.id);
                     }}
                   >
-                    {previewing === v.id ? "⏸" : <IconPlay size={12} />}
+                    {previewing === v.id ? <IconPause size={12} /> : <IconPlay size={12} />}
                   </button>
                 </div>
               ))}

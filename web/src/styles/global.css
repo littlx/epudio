@@ -74,8 +74,12 @@ a {
   cursor: pointer;
   user-select: none;
 }
-.brand .logo-mark {
-  font-size: 22px;
+.brand .logo-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
 }
 .brand h1 {
   font-size: var(--fs-md);
@@ -120,19 +124,22 @@ a {
    全局播放器
    ============================================================ */
 .player-bar {
-  position: sticky;
-  top: var(--topbar-h);
-  z-index: 15;
+  position: fixed;
+  bottom: var(--sp-5);
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2 * var(--sp-5));
+  max-width: 960px;
+  z-index: 30;
   display: flex;
   align-items: center;
   gap: var(--sp-4);
   padding: var(--sp-3) var(--sp-4);
-  margin: 0 var(--sp-5);
   background: color-mix(in srgb, var(--surface) 90%, transparent);
   backdrop-filter: blur(16px);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
   transition: all var(--dur) var(--ease);
 }
 .player-bar .player-info {
@@ -201,6 +208,27 @@ a {
 .player-bar .player-slider:hover {
   background: var(--border);
 }
+.player-bar .player-speed-control {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.player-bar .player-speed-control select {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-soft);
+  padding: 3px 8px;
+  font-size: var(--fs-xs);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.player-bar .player-speed-control select:hover,
+.player-bar .player-speed-control select:focus {
+  border-color: var(--accent);
+  color: var(--text);
+}
 
 /* ============================================================
    主区域
@@ -208,7 +236,7 @@ a {
 .app-main {
   max-width: 960px;
   margin: 0 auto;
-  padding: var(--sp-5) var(--sp-5) var(--sp-7);
+  padding: var(--sp-5) var(--sp-5) 120px;
 }
 
 /* ============================================================
@@ -956,9 +984,10 @@ a {
   padding: var(--sp-7) var(--sp-4);
   color: var(--muted);
 }
-.empty-state .emoji {
-  font-size: 48px;
+.empty-state .icon {
   margin-bottom: var(--sp-3);
+  color: var(--muted);
+  opacity: 0.8;
 }
 
 /* 骨架屏 */
@@ -992,7 +1021,10 @@ a {
     font-size: var(--fs-base);
   }
   .player-bar {
-    margin: 0 var(--sp-3);
+    width: calc(100% - 2 * var(--sp-3));
+    bottom: var(--sp-3);
+    left: 50%;
+    transform: translateX(-50%);
     flex-wrap: wrap;
     gap: var(--sp-2);
     padding: var(--sp-2) var(--sp-3);

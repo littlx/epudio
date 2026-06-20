@@ -17,6 +17,7 @@ export function GlobalPlayer() {
 
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [playbackRate, setPlaybackRate] = useState(1.0);
 
   // src 变化时加载并播放
   useEffect(() => {
@@ -27,6 +28,8 @@ export function GlobalPlayer() {
       a.src = url;
       a.load();
     }
+    // 重新应用当前的播放语速
+    a.playbackRate = playbackRate;
     if (!cur.paused) {
       a.play().catch(() => {});
     } else {
@@ -44,6 +47,13 @@ export function GlobalPlayer() {
       a.play().catch(() => {});
     }
   }, [cur.paused]);
+
+  // 语速变化
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = playbackRate;
+    }
+  }, [playbackRate]);
 
   const handleTimeUpdate = () => {
     if (audioRef.current) {
@@ -69,6 +79,11 @@ export function GlobalPlayer() {
     player.value = { ...cur, paused: !cur.paused };
   };
 
+  const handleSpeedChange = (e: Event) => {
+    const rate = Number((e.target as HTMLSelectElement).value);
+    setPlaybackRate(rate);
+  };
+
   if (!cur.bookId || cur.index == null) return null;
 
   const title = playingTitle();
@@ -77,7 +92,7 @@ export function GlobalPlayer() {
     <div class="player-bar">
       <div class="player-info">
         <div class="player-now">
-          {cur.paused ? "⏸ 已暂停" : "▶ 正在播放"}
+          {cur.paused ? "已暂停" : "正在播放"}
         </div>
         <div class="player-title" title={title}>
           {title}
@@ -125,6 +140,21 @@ export function GlobalPlayer() {
 
       <div class="player-time-display">
         {formatDuration(currentTime)} / {formatDuration(duration)}
+      </div>
+
+      <div class="player-speed-control">
+        <select
+          value={playbackRate}
+          onChange={handleSpeedChange}
+          aria-label="播放语速"
+        >
+          <option value={0.8}>0.8x</option>
+          <option value={1.0}>1.0x</option>
+          <option value={1.25}>1.25x</option>
+          <option value={1.5}>1.5x</option>
+          <option value={1.75}>1.75x</option>
+          <option value={2.0}>2.0x</option>
+        </select>
       </div>
 
       <audio
