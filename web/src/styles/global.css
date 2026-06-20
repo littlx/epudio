@@ -1379,6 +1379,7 @@ a:hover {
     position: sticky;
     top: calc(var(--topbar-h) + var(--sp-5));
     flex-direction: column;
+    flex-wrap: nowrap;
     align-items: center;
     text-align: center;
     width: 100%;
