@@ -17,6 +17,7 @@ ENV/
 # 环境变量
 .env
 .env.*
+!.env.example
 
 # 运行时数据（书籍/音频/设置）
 data/
