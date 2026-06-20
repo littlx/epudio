@@ -1,7 +1,5 @@
-# tmp
-P0_COMPLETION_REPORT.md
 # =========================
-# Python / Flask
+# Python
 # =========================
 __pycache__/
 *.py[cod]
@@ -13,29 +11,18 @@ env/
 .venv/
 ENV/
 
-# Flask instance folder
-instance/
-.webassets-cache
-
 # 日志
 *.log
-
-# SQLite 数据库
-*.sqlite3
-#*.db
-*.db-shm
-*.db-wal
-backend/data/
-backend-go/data/
-
-#migrations/
 
 # 环境变量
 .env
 .env.*
 
+# 运行时数据（书籍/音频/设置）
+data/
+
 # =========================
-# Node / Vue
+# Node / 前端
 # =========================
 node_modules/
 npm-debug.log*
@@ -43,21 +30,15 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# 构建输出
-dist/
-build/
+# 前端构建输出（由 web/ 重新生成）
+static/assets/
+static/index.html
 
-# Vue CLI / Vite
+# Vite
 .vite/
 .cache/
-
-# =========================
-# 前端环境变量
-# =========================
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+dist/
+build/
 
 # =========================
 # IDE / 编辑器
@@ -80,8 +61,6 @@ Thumbs.db
 # =========================
 .coverage
 coverage/
-coverage.out
-htmlcov/
 .pytest_cache/
 
 # =========================
@@ -90,17 +69,7 @@ htmlcov/
 *.swp
 *.swo
 *~
-
-# =========================
-# Docker（可选）
-# =========================
-docker-compose.override.yml
-
-# =========================
-# 其他
-# =========================
 *.bak
 *.tmp
-.qwen/
-tsconfig.tsbuildinfo
 
+tsconfig.tsbuildinfo

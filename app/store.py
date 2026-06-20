@@ -1,4 +1,4 @@
-"""data/ 目录与 meta.json 的读写管理。"""
+"""data/ 目录与 meta.json / settings.json 的读写管理。"""
 from __future__ import annotations
 
 import json
@@ -7,7 +7,7 @@ import uuid
 from pathlib import Path
 
 from .config import settings
-from .schemas import BookMeta, Chapter
+from .schemas import BookMeta, Chapter, Settings as AppSettings
 
 
 def ensure_dirs(book_id: str) -> None:
@@ -94,3 +94,79 @@ def new_book(title: str, author: str, chapters: list[Chapter]) -> BookMeta:
     )
     save_meta(meta)
     return meta
+
+
+# ---- 全局设置 ----
+
+def _default_settings() -> AppSettings:
+    """从 .env/环境变量派生默认设置。"""
+    return AppSettings(
+        style=settings.style,
+        turns_min=settings.turns_min,
+        turns_max=settings.turns_max,
+        voice_a=settings.voice_a,
+        voice_b=settings.voice_b,
+        concurrency=settings.concurrency,
+        deepseek_rpm=settings.deepseek_rpm,
+        edge_concurrency=settings.edge_concurrency,
+        theme=settings.theme,
+    )
+
+
+def load_settings() -> AppSettings:
+    """加载 settings.json，缺失字段用默认值补全。"""
+    p = settings.settings_file
+    if not p.exists():
+        return _default_settings()
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return _default_settings()
+    # 用默认值打底，再覆盖已存字段
+    base = _default_settings().model_dump()
+    base.update({k: v for k, v in data.items() if k in base})
+    return AppSettings.model_validate(base)
+
+
+def save_settings(s: AppSettings) -> None:
+    p = settings.settings_file
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(s.model_dump_json(indent=2), encoding="utf-8")
+    apply_settings(s)
+
+
+def apply_settings(s: AppSettings) -> None:
+    """把运行时设置同步到全局 settings，供 interpreter/tts 直接读取。"""
+    settings.style = s.style
+    settings.turns_min = s.turns_min
+    settings.turns_max = s.turns_max
+    settings.voice_a = s.voice_a
+    settings.voice_b = s.voice_b
+    settings.concurrency = s.concurrency
+    settings.deepseek_rpm = s.deepseek_rpm
+    settings.edge_concurrency = s.edge_concurrency
+    settings.theme = s.theme
+
+
+# ---- 启动恢复 ----
+
+def recover_on_startup() -> int:
+    """把所有书中处于中间态（interpreting/synthesizing/retrying）的章节
+    回退为 pending，避免服务重启后永久卡住。返回受影响章节数。
+    """
+    affected = 0
+    for meta in list_books():
+        changed = False
+        for ch in meta.chapters:
+            if ch.status in ("interpreting", "synthesizing", "retrying"):
+                ch.status = "pending"
+                ch.stage = "idle"
+                ch.stage_detail = ""
+                ch.progress = 0.0
+                ch.message = "服务重启，待恢复"
+                changed = True
+                affected += 1
+        if changed:
+            save_meta(meta)
+    return affected
+

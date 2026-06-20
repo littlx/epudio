@@ -1,7 +1,8 @@
-"""应用配置：从环境变量 / .env 读取，集中管理可调参数。"""
+"""应用配置：从环境变量 / .env 读取基础默认值；
+运行时可被 data/settings.json 覆盖（由 store 加载后注入）。
+"""
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 from pydantic import Field
@@ -20,21 +21,28 @@ class Settings(BaseSettings):
     )
     deepseek_model: str = Field(default="deepseek-chat", alias="DEEPSEEK_MODEL")
 
-    # Edge TTS 音色
+    # Edge TTS 音色（默认值，可被 settings.json 覆盖）
     voice_a: str = Field(default="zh-CN-XiaoxiaoNeural", alias="VOICE_A")
     voice_b: str = Field(default="zh-CN-YunxiNeural", alias="VOICE_B")
 
-    # 对谈长度
+    # 解读风格与长度（默认值）
+    style: str = Field(default="dialogue", alias="STYLE")
     turns_min: int = Field(default=8, alias="TURNS_MIN")
     turns_max: int = Field(default=16, alias="TURNS_MAX")
 
-    # 并发
+    # 并发与限流（默认值）
     concurrency: int = Field(default=2, alias="CONCURRENCY")
+    deepseek_rpm: int = Field(default=30, alias="DEEPSEEK_RPM")
+    edge_concurrency: int = Field(default=8, alias="EDGE_CONCURRENCY")
 
     # 数据目录（相对于项目根）
     data_dir: str = Field(default="./data", alias="DATA_DIR")
 
     port: int = Field(default=8000, alias="PORT")
+
+    # ---- 运行时可变设置（不来自 env，由 store.apply_settings 注入）----
+    # 这里仅作占位，真正生效的是 runtime_settings
+    theme: str = "system"
 
     @property
     def project_root(self) -> Path:
@@ -50,6 +58,10 @@ class Settings(BaseSettings):
     @property
     def books_path(self) -> Path:
         return self.data_path / "books"
+
+    @property
+    def settings_file(self) -> Path:
+        return self.data_path / "settings.json"
 
     def book_dir(self, book_id: str) -> Path:
         return self.books_path / book_id

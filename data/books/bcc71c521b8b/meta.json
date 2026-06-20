@@ -11,7 +11,11 @@
       "char_count": 204,
       "status": "pending",
       "message": "",
-      "audio_seconds": null
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": null,
+      "attempts": 0
     },
     {
       "index": 1,
@@ -19,7 +23,11 @@
       "char_count": 1485,
       "status": "pending",
       "message": "",
-      "audio_seconds": null
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": null,
+      "attempts": 0
     },
     {
       "index": 2,
@@ -27,7 +35,11 @@
       "char_count": 1828,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 254.784
+      "stage": "done",
+      "stage_detail": "完成",
+      "progress": 1.0,
+      "audio_seconds": 188.112,
+      "attempts": 1
     },
     {
       "index": 3,
@@ -35,7 +47,11 @@
       "char_count": 1543,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 267.912
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 267.912,
+      "attempts": 0
     },
     {
       "index": 4,
@@ -43,7 +59,11 @@
       "char_count": 3414,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 292.632
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 292.632,
+      "attempts": 0
     },
     {
       "index": 5,
@@ -51,7 +71,11 @@
       "char_count": 4634,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 261.672
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 261.672,
+      "attempts": 0
     },
     {
       "index": 6,
@@ -59,7 +83,11 @@
       "char_count": 1364,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 293.76
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 293.76,
+      "attempts": 0
     },
     {
       "index": 7,
@@ -67,7 +95,11 @@
       "char_count": 2825,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 304.92
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 304.92,
+      "attempts": 0
     },
     {
       "index": 8,
@@ -75,7 +107,11 @@
       "char_count": 1943,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 282.576
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 282.576,
+      "attempts": 0
     },
     {
       "index": 9,
@@ -83,7 +119,11 @@
       "char_count": 2573,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 262.2
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 262.2,
+      "attempts": 0
     },
     {
       "index": 10,
@@ -91,7 +131,11 @@
       "char_count": 5400,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 219.024
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 219.024,
+      "attempts": 0
     },
     {
       "index": 11,
@@ -99,7 +143,11 @@
       "char_count": 2990,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 215.448
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 215.448,
+      "attempts": 0
     },
     {
       "index": 12,
@@ -107,7 +155,11 @@
       "char_count": 6435,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 285.552
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 285.552,
+      "attempts": 0
     },
     {
       "index": 13,
@@ -115,7 +167,11 @@
       "char_count": 3994,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 221.064
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 221.064,
+      "attempts": 0
     },
     {
       "index": 14,
@@ -123,7 +179,11 @@
       "char_count": 4678,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 278.592
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 278.592,
+      "attempts": 0
     },
     {
       "index": 15,
@@ -131,7 +191,11 @@
       "char_count": 7552,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 224.256
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 224.256,
+      "attempts": 0
     },
     {
       "index": 16,
@@ -139,7 +203,11 @@
       "char_count": 2570,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 191.952
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 191.952,
+      "attempts": 0
     },
     {
       "index": 17,
@@ -147,7 +215,11 @@
       "char_count": 6514,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 402.84
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 402.84,
+      "attempts": 0
     },
     {
       "index": 18,
@@ -155,7 +227,11 @@
       "char_count": 2713,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 287.472
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 287.472,
+      "attempts": 0
     },
     {
       "index": 19,
@@ -163,7 +239,11 @@
       "char_count": 4172,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 345.24
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 345.24,
+      "attempts": 0
     },
     {
       "index": 20,
@@ -171,7 +251,11 @@
       "char_count": 3445,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 284.76
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 284.76,
+      "attempts": 0
     },
     {
       "index": 21,
@@ -179,7 +263,11 @@
       "char_count": 2563,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 238.896
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 238.896,
+      "attempts": 0
     },
     {
       "index": 22,
@@ -187,7 +275,11 @@
       "char_count": 3035,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 208.848
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 208.848,
+      "attempts": 0
     },
     {
       "index": 23,
@@ -195,7 +287,11 @@
       "char_count": 1887,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 162.168
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 162.168,
+      "attempts": 0
     },
     {
       "index": 24,
@@ -203,7 +299,11 @@
       "char_count": 1046,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 191.064
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 191.064,
+      "attempts": 0
     },
     {
       "index": 25,
@@ -211,7 +311,11 @@
       "char_count": 2768,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 238.032
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 238.032,
+      "attempts": 0
     },
     {
       "index": 26,
@@ -219,7 +323,11 @@
       "char_count": 666,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 249.24
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 249.24,
+      "attempts": 0
     },
     {
       "index": 27,
@@ -227,7 +335,11 @@
       "char_count": 3729,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 174.408
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 174.408,
+      "attempts": 0
     },
     {
       "index": 28,
@@ -235,7 +347,11 @@
       "char_count": 2529,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 255.312
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 255.312,
+      "attempts": 0
     },
     {
       "index": 29,
@@ -243,7 +359,11 @@
       "char_count": 3531,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 232.656
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 232.656,
+      "attempts": 0
     },
     {
       "index": 30,
@@ -251,7 +371,11 @@
       "char_count": 2932,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 245.784
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 245.784,
+      "attempts": 0
     },
     {
       "index": 31,
@@ -259,7 +383,11 @@
       "char_count": 3545,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 293.52
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 293.52,
+      "attempts": 0
     },
     {
       "index": 32,
@@ -267,7 +395,11 @@
       "char_count": 2175,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 316.68
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 316.68,
+      "attempts": 0
     },
     {
       "index": 33,
@@ -275,7 +407,11 @@
       "char_count": 2812,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 202.68
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 202.68,
+      "attempts": 0
     },
     {
       "index": 34,
@@ -283,7 +419,11 @@
       "char_count": 2871,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 229.248
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 229.248,
+      "attempts": 0
     },
     {
       "index": 35,
@@ -291,7 +431,11 @@
       "char_count": 2529,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 227.448
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 227.448,
+      "attempts": 0
     },
     {
       "index": 36,
@@ -299,7 +443,11 @@
       "char_count": 3959,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 275.64
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 275.64,
+      "attempts": 0
     },
     {
       "index": 37,
@@ -307,7 +455,11 @@
       "char_count": 4471,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 322.968
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 322.968,
+      "attempts": 0
     },
     {
       "index": 38,
@@ -315,7 +467,11 @@
       "char_count": 4267,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 212.304
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 212.304,
+      "attempts": 0
     },
     {
       "index": 39,
@@ -323,7 +479,11 @@
       "char_count": 3825,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 316.8
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 316.8,
+      "attempts": 0
     },
     {
       "index": 40,
@@ -331,7 +491,11 @@
       "char_count": 3321,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 351.912
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 351.912,
+      "attempts": 0
     },
     {
       "index": 41,
@@ -339,7 +503,11 @@
       "char_count": 2230,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 231.672
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 231.672,
+      "attempts": 0
     },
     {
       "index": 42,
@@ -347,7 +515,11 @@
       "char_count": 3284,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 273.024
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 273.024,
+      "attempts": 0
     },
     {
       "index": 43,
@@ -355,7 +527,11 @@
       "char_count": 1536,
       "status": "done",
       "message": "完成",
-      "audio_seconds": 295.152
+      "stage": "idle",
+      "stage_detail": "",
+      "progress": 0.0,
+      "audio_seconds": 295.152,
+      "attempts": 0
     }
   ],
   "running": false
