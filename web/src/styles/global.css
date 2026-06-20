@@ -1353,6 +1353,68 @@ a:hover {
   100% { background-position: -200% 0; }
 }
 
+/* 大屏幕宽度足够时，详情页采用左右分栏两列布局 */
+@media (min-width: 900px) {
+  .book-detail-container {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: var(--sp-6);
+    align-items: start;
+  }
+  
+  .book-detail-hero {
+    position: sticky;
+    top: calc(var(--topbar-h) + var(--sp-5));
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    gap: var(--sp-4);
+  }
+  
+  .book-hero-cover {
+    width: 160px;
+    height: 224px;
+  }
+  
+  .book-hero-info {
+    align-items: center;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .book-hero-info h2 {
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .book-hero-info .badge-row {
+    justify-content: center;
+  }
+  
+  .book-hero-info .progress-section {
+    width: 100%;
+  }
+  
+  .book-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-2);
+  }
+  
+  .book-actions .btn {
+    width: 100%;
+  }
+  
+  .book-detail-main {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+  }
+}
+
 /* ============================================================
    响应式布局调整
    ============================================================ */

@@ -163,27 +163,29 @@ export function BookDetail({ bookId }: { bookId: string }) {
         </div>
       </div>
 
-      <div class="chapter-toolbar">
-        <label>
-          <input
-            type="checkbox"
-            checked={allSelected}
-            onChange={(e) => selectAll((e.target as HTMLInputElement).checked)}
-          />{" "}
-          全选章节
-        </label>
-        <button class="btn sm ghost" onClick={selectPending}>
-          选中未完成
-        </button>
-        <span class="muted" style={{ marginLeft: "auto" }}>
-          已选中 {selectedCount.value} / {total} 章
-        </span>
-      </div>
+      <div class="book-detail-main">
+        <div class="chapter-toolbar">
+          <label>
+            <input
+              type="checkbox"
+              checked={allSelected}
+              onChange={(e) => selectAll((e.target as HTMLInputElement).checked)}
+            />{" "}
+            全选章节
+          </label>
+          <button class="btn sm ghost" onClick={selectPending}>
+            选中未完成
+          </button>
+          <span class="muted" style={{ marginLeft: "auto" }}>
+            已选中 {selectedCount.value} / {total} 章
+          </span>
+        </div>
 
-      <div class="chapter-list">
-        {meta.chapters.map((ch) => (
-          <ChapterRow key={ch.index} bookId={bookId} chapter={ch} />
-        ))}
+        <div class="chapter-list">
+          {meta.chapters.map((ch) => (
+            <ChapterRow key={ch.index} bookId={bookId} chapter={ch} />
+          ))}
+        </div>
       </div>
     </div>
   );
