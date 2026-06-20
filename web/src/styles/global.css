@@ -1063,11 +1063,89 @@ a:hover {
   color: var(--muted);
   font-weight: 500;
 }
-.book-actions {
+.book-actions-bar {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-2);
+  padding: 12px var(--sp-4);
+  background: var(--surface-2);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+}
+.actions-group-left {
+  display: flex;
+  align-items: center;
   gap: var(--sp-2);
   flex-wrap: wrap;
-  margin-top: var(--sp-1);
+}
+.actions-group-right {
+  display: flex;
+  align-items: center;
+}
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  border: 1px solid transparent;
+  outline: none;
+}
+.btn-action.primary {
+  background: var(--accent-gradient);
+  color: #fff;
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+.btn-action.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px var(--accent-glow);
+}
+.btn-action.primary:active {
+  transform: translateY(0) scale(0.98);
+}
+.btn-action.primary.running {
+  background: var(--surface-3) !important;
+  color: var(--text-soft) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+  transform: none !important;
+}
+.btn-action.primary.running .pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 4px;
+  animation: pulse-badge 1.5s infinite ease-in-out;
+}
+.btn-action.secondary {
+  background: var(--surface-3);
+  color: var(--text-soft);
+  border: 1px solid var(--border);
+}
+.btn-action.secondary:hover {
+  background: var(--surface-solid);
+  color: var(--text);
+  border-color: var(--border-glow);
+}
+.btn-action.danger-outline {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid transparent;
+}
+.btn-action.danger-outline:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
+  border-color: rgba(239, 68, 68, 0.2);
 }
 
 /* ============================================================
@@ -1461,22 +1539,31 @@ a:hover {
     width: 100%;
   }
   
-  .book-actions {
+  .book-actions-bar {
     width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    gap: var(--sp-1);
-    margin-top: var(--sp-2);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-2);
+    padding: var(--sp-2);
   }
-  
-  .book-actions .btn {
-    flex: 1;
-    padding: 8px 4px;
-    font-size: var(--fs-xs);
-    gap: 4px;
-    white-space: nowrap;
+  .actions-group-left {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: var(--sp-2);
+  }
+  .actions-group-left .btn-action {
+    width: 100%;
+    justify-content: center;
+  }
+  .actions-group-right {
+    justify-content: center;
+    width: 100%;
+    border-top: 1px solid var(--border-soft);
+    padding-top: var(--sp-2);
+  }
+  .actions-group-right .btn-action {
+    width: 100%;
     justify-content: center;
   }
   
@@ -1616,22 +1703,6 @@ a:hover {
     width: 100%;
   }
   
-  /* 移动端 2x2 网格，使按钮在窄屏下也极具舒展度，文字绝不直排折行 */
-  .book-actions {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--sp-2);
-    margin-top: var(--sp-2);
-  }
-  .book-actions .btn {
-    width: 100%;
-    padding: 10px 8px;
-    font-size: var(--fs-xs);
-    gap: 6px;
-    white-space: nowrap;
-    justify-content: center;
-  }
 }
 
 @media (max-width: 560px) {

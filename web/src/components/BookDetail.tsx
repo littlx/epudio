@@ -22,6 +22,7 @@ import {
   IconRefresh,
   IconEdit,
   IconChevron,
+  IconPlay,
 } from "./icons";
 import { getBookGradient } from "../utils";
 import type { Chapter } from "../types";
@@ -105,6 +106,12 @@ export function BookDetail({ bookId }: { bookId: string }) {
       `[data-chapter-idx="${undone.index}"]`
     );
     if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const handleDelete = () => {
+    if (confirm(`确定要删除《${meta.title}》吗？所有章节和音频数据将被永久删除！`)) {
+      deleteBook(meta.book_id);
+    }
   };
 
   // 折叠已完成时，把列表拆成 done（折叠为一行）与其余
@@ -208,30 +215,46 @@ export function BookDetail({ bookId }: { bookId: string }) {
             )}
           </div>
 
-          <div class="book-actions">
-            <button class="btn" onClick={generateAll}>
-              <IconRefresh size={16} /> 生成缺失
-            </button>
-            <button
-              class="btn ghost"
-              disabled={selectedCount.value === 0}
-              onClick={generateSelected}
-            >
-              生成选中{selectedCount.value > 0 ? `(${selectedCount.value})` : ""}
-            </button>
-            {selectedCount.value > 0 && (
-              <button class="btn ghost" onClick={regenerateSelected}>
-                <IconRefresh size={16} /> 重做选中({selectedCount.value})
+          <div class="book-actions-bar">
+            <div class="actions-group-left">
+              {meta.running ? (
+                <button class="btn-action primary running" disabled>
+                  <span class="pulse-dot" />
+                  正在后台生成中...
+                </button>
+              ) : selectedCount.value > 0 ? (
+                <button class="btn-action primary" onClick={generateSelected}>
+                  <IconPlay size={16} />
+                  生成选中章节 ({selectedCount.value})
+                </button>
+              ) : (
+                <button class="btn-action primary" onClick={generateAll}>
+                  <IconPlay size={16} />
+                  生成全部未完成
+                </button>
+              )}
+
+              {selectedCount.value > 0 && !meta.running && (
+                <button class="btn-action secondary" onClick={regenerateSelected}>
+                  <IconRefresh size={16} />
+                  重做选中 ({selectedCount.value})
+                </button>
+              )}
+
+              {done > 0 && (
+                <button class="btn-action secondary" onClick={handleExport}>
+                  <IconDownload size={16} />
+                  导出整书 ({done}/{total})
+                </button>
+              )}
+            </div>
+
+            <div class="actions-group-right">
+              <button class="btn-action danger-outline" onClick={handleDelete} title="删除书籍">
+                <IconTrash size={16} />
+                <span>删除书籍</span>
               </button>
-            )}
-            {done > 0 && (
-              <button class="btn ghost" onClick={handleExport}>
-                <IconDownload size={16} /> 导出整书
-              </button>
-            )}
-            <button class="btn danger" title="删除书籍" onClick={() => deleteBook(bookId)}>
-              <IconTrash size={16} /> 删除
-            </button>
+            </div>
           </div>
         </div>
       </div>
