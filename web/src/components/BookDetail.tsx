@@ -121,22 +121,20 @@ export function BookDetail({ bookId }: { bookId: string }) {
             </h2>
           )}
           <p class="author-name">{meta.author || "未知作者"}</p>
-          <div class="badge-row">
-            <span class="badge">共 {total} 章</span>
-            {done > 0 && <span class="badge success">已完成 {done}/{total}</span>}
-            {err > 0 && <span class="badge danger">生成失败 {err} 章</span>}
-          </div>
-          
           <div class="progress-section">
             <div class="progress-label">
-              <span>有声合成进度</span>
+              <span>已完成 {done}/{total} 章</span>
               <span>{Math.round(p)}%</span>
             </div>
             <div class="progress-bar">
               <div class="fill" style={{ width: `${p}%` }} />
             </div>
             <p class="muted-status">
-              {meta.running ? "正在执行后台生成服务…" : err > 0 ? "部分章节生成失败，您可以勾选并重试" : "所有章节已处于最新状态"}
+              {meta.running
+                ? "正在执行后台生成服务…"
+                : err > 0
+                ? `有 ${err} 章节生成失败，您可以勾选并重试`
+                : "所有章节已处于最新状态"}
             </p>
           </div>
 
