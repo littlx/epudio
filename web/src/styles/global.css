@@ -639,13 +639,36 @@ a:hover {
   justify-content: center;
 }
 .chapter-row .checkbox input {
+  -webkit-appearance: none;
+  appearance: none;
   width: 18px;
   height: 18px;
-  accent-color: var(--accent);
-  cursor: pointer;
-  border: 2px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: 4px;
+  background: var(--surface-2);
+  cursor: pointer;
+  position: relative;
   transition: all var(--dur) var(--ease);
+  outline: none;
+}
+.chapter-row .checkbox input:hover {
+  border-color: var(--accent);
+  background: var(--surface-3);
+}
+.chapter-row .checkbox input:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.chapter-row .checkbox input:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
 }
 
 .chapter-row .idx {

@@ -40,6 +40,7 @@
 
 /* ---- 曜石星云暗色主题 (Polar Nebula Dark) ---- */
 [data-theme="dark"] {
+  color-scheme: dark;
   --bg: #090a0f;
   --bg-grad: radial-gradient(circle at 50% -20%, rgba(139, 92, 246, 0.15) 0%, rgba(99, 102, 241, 0.08) 35%, rgba(9, 10, 15, 0) 70%), #090a0f;
   --bg-grid: rgba(255, 255, 255, 0.015);
@@ -79,6 +80,7 @@
 
 /* ---- 樱落晨曦浅色主题 (Sakura Dawn Light) ---- */
 [data-theme="light"] {
+  color-scheme: light;
   --bg: #f8fafc;
   --bg-grad: radial-gradient(circle at 50% -20%, rgba(224, 231, 255, 0.6) 0%, rgba(243, 232, 255, 0.4) 35%, rgba(248, 250, 252, 0) 70%), #f8fafc;
   --bg-grid: rgba(99, 102, 241, 0.015);
