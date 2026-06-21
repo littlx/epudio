@@ -1600,7 +1600,7 @@ a:hover {
    ============================================================ */
 @media (max-width: 720px) {
   .app-main {
-    padding: var(--sp-4) var(--sp-3) 95px;
+    padding: var(--sp-4) var(--sp-3) calc(95px + env(safe-area-inset-bottom));
   }
   .topbar {
     padding: 0 var(--sp-4);
@@ -1612,7 +1612,7 @@ a:hover {
   /* 移动端极简单行播放器 */
   .player-bar {
     width: calc(100% - 2 * var(--sp-3));
-    bottom: var(--sp-3);
+    bottom: calc(var(--sp-3) + env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
     flex-wrap: nowrap;
