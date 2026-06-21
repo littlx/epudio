@@ -311,20 +311,22 @@ export function BookDetail({ bookId }: { bookId: string }) {
             />{" "}
             全选章节
           </label>
-          <button class="btn sm ghost" onClick={selectPending}>
-            选中未完成
-          </button>
-          <button class="btn sm ghost" onClick={scrollToFirstUndone}>
-            跳到未完成
-          </button>
-          {done > 0 && (
-            <button
-              class="btn sm ghost"
-              onClick={() => setCollapsedDone((v) => !v)}
-            >
-              {collapsedDone ? `展开已完成(${done})` : `收起已完成(${done})`}
+          <div class="toolbar-btn-group">
+            <button class="btn sm ghost" onClick={selectPending}>
+              选中未完成
             </button>
-          )}
+            <button class="btn sm ghost" onClick={scrollToFirstUndone}>
+              跳到未完成
+            </button>
+            {done > 0 && (
+              <button
+                class="btn sm ghost"
+                onClick={() => setCollapsedDone((v) => !v)}
+              >
+                {collapsedDone ? `展开已完成(${done})` : `收起已完成(${done})`}
+              </button>
+            )}
+          </div>
           <span class="muted" style={{ marginLeft: "auto" }}>
             已选中 {selectedCount.value} / {total} 章
           </span>
